@@ -13,8 +13,8 @@
   "repository": {
     "superheader": {
       "name": "meta.superheader.chronoarchive",
-      "begin": "^(?!\\s)(?=.*:)(?!.*\\b\\d{2}:\\d{2}\\b)",
-      "end": "^(?=\\S.*\\b\\d{2}:\\d{2}\\b)|^$",
+      "begin": "^(?!\\s)(?=.*:)(?!.*:.*\\b\\d{2}:\\d{2}\\b)",
+      "end": "^$|^(?=\\S)(?=.*\\b\\d{2}:\\d{2}\\b)(?!.*:.*)",
       "patterns": [
         {
           "include": "#attribute-line"

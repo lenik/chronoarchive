@@ -42,6 +42,31 @@ Project: ChronoArchive
       assert.strictEqual(result.ast.superheader[0].name, 'Name');
       assert.strictEqual(result.ast.superheader[0].value, 'Value with spaces');
     });
+
+    test('should parse superheader attributes with time in value', () => {
+      // Superheader attribute values can contain time patterns
+      // The colon before time should NOT be treated as starting an item
+      const content = `Date: Sat Feb 28 18:19:02 PM CST
+Author: Lenik
+Meeting: 2026-02-28 14:30:00
+
+📝 09:00:00
+First item with payload
+`;
+      const result = parse(content);
+      
+      assert.strictEqual(result.ast.superheader.length, 3);
+      assert.strictEqual(result.ast.superheader[0].name, 'Date');
+      assert.strictEqual(result.ast.superheader[0].value, 'Sat Feb 28 18:19:02 PM CST');
+      assert.strictEqual(result.ast.superheader[1].name, 'Author');
+      assert.strictEqual(result.ast.superheader[1].value, 'Lenik');
+      assert.strictEqual(result.ast.superheader[2].name, 'Meeting');
+      assert.strictEqual(result.ast.superheader[2].value, '2026-02-28 14:30:00');
+      
+      assert.strictEqual(result.ast.items.length, 1);
+      assert.strictEqual(result.ast.items[0].time, '09:00:00');
+      assert.strictEqual(result.ast.items[0].flags[0], '📝');
+    });
   });
 
   suite('Item Head Parsing', () => {

@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(outputChannel);
   
   // Register all providers
-  const providers = registerProviders(context);
+  const providers = registerProviders();
   context.subscriptions.push(...providers);
   
   // Register CodeLens commands
@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext): void {
 /**
  * Register all language providers for chronoarchive
  */
-function registerProviders(context: vscode.ExtensionContext): vscode.Disposable[] {
+function registerProviders(): vscode.Disposable[] {
   const disposables: vscode.Disposable[] = [];
   
   const selector: vscode.DocumentSelector = {

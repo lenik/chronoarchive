@@ -245,8 +245,9 @@ async function cycleFlag(flagList: string[]): Promise<void> {
   if (currentIndex === -1) {
     // No flag from the list exists, add the first one
     
-    // Remove all flags from the head line
-    headText = headText.replace(/[☑️✅🎉❌❎🗑️🟡⏱️⌛🚧🔄🛠️📝📍📌⚠️‼️🔥]/g, '').trim();
+    // Remove all known flag emoji from the head line
+    const flagPattern = /[☑✅🎉❌❎🗑🟡⏱⌛🚧🔄🛠📝📍📌⚠‼🔥]/gu;
+    headText = headText.replace(flagPattern, '').trim();
     
     const flag = flagList[0];
     const parts = headText.split(/\s+/);
@@ -402,8 +403,8 @@ async function moveItem(direction: 'up' | 'down'): Promise<void> {
   // Calculate how many lines will be in the moved item after insertion
   const blankLines = getBlankLinesConfig();
 
-  let itemLines = content.split('\n').slice(item.startLine, item.endLine);
-  let targetLines = content.split('\n').slice(targetItem.startLine, targetItem.endLine);
+  const itemLines = content.split('\n').slice(item.startLine, item.endLine);
+  const targetLines = content.split('\n').slice(targetItem.startLine, targetItem.endLine);
 
   if (blankLines > 0) {
     // Strip trailing blank lines from items
@@ -605,7 +606,7 @@ async function addNewItem(position: 'before' | 'after' | 'end'): Promise<void> {
   const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
   
   let blankLines = getBlankLinesConfig();
-  if (blankLines == 0) blankLines = 1;
+  if (blankLines === 0) { blankLines = 1; }
 
   let insertPosition: vscode.Position;
   let prefix: string;
@@ -615,7 +616,7 @@ async function addNewItem(position: 'before' | 'after' | 'end'): Promise<void> {
     // Add at end of file
     // Need to ensure we're at column 0 of a new line, not continuing from indented content
     let lastLine = editor.document.lineCount - 1;
-    let lastLineText = editor.document.lineAt(lastLine).text;
+    const lastLineText = editor.document.lineAt(lastLine).text;
     
     // First, ensure the last line ends with a newline
     if (lastLineText.trim() !== '') {
