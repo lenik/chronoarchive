@@ -160,9 +160,10 @@ Project: ChronoArchive
 
   suite('Item Attributes Parsing', () => {
     test('should parse item attributes', () => {
+      // Attributes must start at column 0, immediately after header, no blank lines
       const content = `✅ 12:34:56
-    Priority: High
-    Category: Network
+Priority: High
+Category: Network
     payload content
 `;
       const result = parse(content);
@@ -183,6 +184,21 @@ Project: ChronoArchive
       
       assert.strictEqual(result.ast.items.length, 1);
       assert.strictEqual(result.ast.items[0].attributes.length, 0);
+    });
+    
+    test('should parse attributes with time in value', () => {
+      // Attribute values can contain time patterns
+      const content = `📝 12:34:56
+Deadline: 2026-03-01 12:00:00
+    message body
+`;
+      const result = parse(content);
+      
+      assert.strictEqual(result.ast.items.length, 1);
+      assert.strictEqual(result.ast.items[0].attributes.length, 1);
+      assert.strictEqual(result.ast.items[0].attributes[0].name, 'Deadline');
+      assert.strictEqual(result.ast.items[0].attributes[0].value, '2026-03-01 12:00:00');
+      assert.strictEqual(result.ast.items[0].payload.trim(), 'message body');
     });
   });
 
@@ -358,9 +374,10 @@ Project: ChronoArchive
     });
 
     test('should handle duplicate attributes', () => {
+      // Attributes must start at column 0
       const content = `✅ 12:34:56
-    Tag: first
-    Tag: second
+Tag: first
+Tag: second
     payload
 `;
       const result = parse(content);
@@ -377,6 +394,8 @@ Author: Lenik
 
 
 📝 12:34:56
+Message-Type: Simple
+Deadline: 2026-03-01 12:00:00
     message
     this is a note
 
@@ -401,6 +420,9 @@ Author: Lenik
       // First item
       assert.strictEqual(result.ast.items[0].flags[0], '📝');
       assert.strictEqual(result.ast.items[0].time, '12:34:56');
+      assert.strictEqual(result.ast.items[0].attributes.length, 2);
+      assert.strictEqual(result.ast.items[0].attributes[0].name, 'Message-Type');
+      assert.strictEqual(result.ast.items[0].attributes[1].name, 'Deadline');
       assert.ok(result.ast.items[0].payload.includes('this is a note'));
       
       // Second item

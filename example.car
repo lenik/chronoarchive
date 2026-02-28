@@ -3,10 +3,12 @@ Author: Lenik
 
 
 📝 12:34:56
+Message-Type: Simple
+Deadline: 2026-03-01 12:00:00
     message
     ...
 
-✅ 12:45:00      /prompt
+📝 12:45:00 /prompt
     write a program about weather analysis.
     
     1. Qt based

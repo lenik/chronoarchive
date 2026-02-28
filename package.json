@@ -291,7 +291,7 @@
       },
       {
         "command": "chronoarchive.deleteItem",
-        "key": "ctrl+delete",
+        "key": "ctrl+shift+delete",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {

@@ -40,10 +40,12 @@ export function parse(content: string): ParseResult {
   let currentLine = 0;
   
   // Parse superheader (attributes at column 0 before first item)
+  // Attributes must start at column 0 and be followed immediately by more attributes or item
+  // A blank line ends the superheader block
   while (currentLine < lines.length) {
     const line = lines[currentLine];
     
-    // Stop at first blank line or item head
+    // Stop at first blank line (ends superheader block)
     if (PATTERNS.blank.test(line)) {
       currentLine++;
       break;
@@ -54,7 +56,7 @@ export function parse(content: string): ParseResult {
       break;
     }
     
-    // Try to parse as attribute
+    // Try to parse as attribute (must start at column 0)
     if (PATTERNS.atColumnZero.test(line) && line.includes(':')) {
       const attr = parseAttributeLine(line, currentLine);
       if (attr) {
@@ -125,21 +127,38 @@ function parseItem(
   let currentLine = startLine + 1;
   const attributes: Attribute[] = [];
   
-  // Parse item attributes (indented lines with colon)
+  // Parse item attributes (lines starting at column 0 with colon)
+  // Attributes must follow immediately after header with no blank lines
+  // Attributes are NOT indented - they start at column 0
   while (currentLine < lines.length) {
     const line = lines[currentLine];
     
-    // Stop at blank line or non-indented line
-    if (PATTERNS.blank.test(line) || !PATTERNS.indented.test(line)) {
+    // Stop at blank line (attributes must follow header immediately)
+    if (PATTERNS.blank.test(line)) {
       break;
     }
     
-    // Check if it's an attribute line
-    if (line.includes(':')) {
+    // Stop at indented line (start of payload)
+    if (PATTERNS.indented.test(line)) {
+      break;
+    }
+    
+    // Check if it's an attribute line first (starts at column 0 with colon)
+    // This check must come BEFORE checking for item head, because attribute values
+    // can contain time patterns (e.g., "Deadline: 2026-03-01 12:00:00")
+    if (PATTERNS.atColumnZero.test(line) && line.includes(':')) {
+      // Try to parse as attribute
       const attr = parseAttributeLine(line, currentLine);
       if (attr) {
         attributes.push(attr);
+        currentLine++;
+        continue;
       }
+    }
+    
+    // Stop at next item head (starts at column 0 with time and is not an attribute)
+    if (PATTERNS.atColumnZero.test(line) && PATTERNS.time.test(line)) {
+      break;
     }
     
     currentLine++;

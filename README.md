@@ -66,7 +66,7 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Delete` | Delete current item (with confirmation) |
+| `Ctrl+Shift+Delete` | Delete current item (with confirmation) |
 
 ### Configuration
 

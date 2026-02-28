@@ -24,7 +24,7 @@
     "item": {
       "name": "meta.item.chronoarchive",
       "begin": "^(?!\\s)(?=.*\\b\\d{2}:\\d{2}\\b)",
-      "end": "^(?=\\S.*\\b\\d{2}:\\d{2}\\b)|^(?=\\S.*:.*$)|^(?!\\s+$)|\\Z",
+      "end": "^\\s*$|^(?=\\S.*\\b\\d{2}:\\d{2}\\b)|\\Z",
       "beginCaptures": {
         "0": {
           "patterns": [
@@ -34,7 +34,6 @@
           ]
         }
       },
-      "contentName": "meta.item.payload.chronoarchive",
       "patterns": [
         {
           "include": "#item-attributes"
@@ -111,8 +110,8 @@
     },
     "item-attributes": {
       "name": "meta.item.attributes.chronoarchive",
-      "begin": "^(?!\\s*$)(?=\\s+\\S.*:)",
-      "end": "^(?!\\s+\\S.*:)",
+      "begin": "^(?!\\s)(?=.*:)(?!.*\\b\\d{2}:\\d{2}\\b.*\\/)",
+      "end": "^\\s*$|^(?!\\S.*:)|^(?=.*\\b\\d{2}:\\d{2}\\b)",
       "patterns": [
         {
           "include": "#attribute-line"

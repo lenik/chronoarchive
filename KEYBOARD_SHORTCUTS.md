@@ -57,7 +57,7 @@ These shortcuts cycle through multiple flag variants in order, toggling off afte
 
 | Shortcut | Command | Description |
 |----------|---------|-------------|
-| `Ctrl+Delete` | `chronoarchive.deleteItem` | Delete current item (with confirmation) |
+| `Ctrl+Shift+Delete` | `chronoarchive.deleteItem` | Delete current item (with confirmation) |
 
 ## Usage Examples
 

@@ -38,10 +38,11 @@ file = superheader? item*
 
 Where:
 
-* `superheader` is an optional sequence of attributes at the top of the file
+* `superheader` is an optional sequence of attributes at the top of the file (column 0)
 * `item` is a repeatable structured block
 
 Blank lines MAY appear anywhere and SHOULD be ignored unless inside payload.
+Items MUST be separated by at least one blank line.
 
 ---
 
@@ -51,7 +52,9 @@ Blank lines MAY appear anywhere and SHOULD be ignored unless inside payload.
 
 The superheader appears at the beginning of the file and consists of one or more attribute lines.
 
-It ends when the first valid `item head` is encountered.
+It ends when:
+* A blank line is encountered, OR
+* The first valid `item head` is encountered
 
 ## 3.2 Syntax
 
@@ -67,6 +70,7 @@ Attribute-Name: Attribute-Value
 * Multiple attributes allowed
 * Attribute names are case-sensitive
 * Duplicate attribute names are allowed
+* Attribute values MAY contain time patterns
 
 ## 3.3 Example
 
@@ -74,6 +78,9 @@ Attribute-Name: Attribute-Value
 Date: 2022-03-04
 Author: Lenik
 Project: ChronoArchive
+
+📝 12:34:56
+    payload
 ```
 
 ---
@@ -89,9 +96,11 @@ item =
 
 Each item MUST contain:
 
-1. A `head` line
-2. Zero or more `attribute` lines
+1. A `head` line (starts at column 0 with time token)
+2. Zero or more `attribute` lines (start at column 0 with colon, no blank lines after head)
 3. A required `payload` block (indented)
+
+Items MUST be separated by at least one blank line.
 
 ---
 
@@ -242,24 +251,47 @@ Item attributes follow the head and precede payload.
 ## 6.1 Syntax
 
 ```
-<indent>Name: Value
+Name: Value
 ```
 
 ## 6.2 Rules
 
-* MUST be indented
+* MUST start at column 0 (NOT indented)
 * MUST contain `:`
+* MUST follow immediately after the head line (no blank lines between)
 * Attribute name and value SHOULD be trimmed
 * Multiple allowed
 * Order preserved
 * Duplicate names allowed
+* Attribute values MAY contain time patterns (e.g., `Deadline: 2026-03-01 12:00:00`)
 
 ## 6.3 Example
 
 ```
+📝 12:34:56
 Priority: High
 Category: Network
-Retry: 3
+Deadline: 2026-03-01 12:00:00
+    payload content here
+```
+
+## 6.4 Distinguishing Attributes from Heads
+
+Parsers MUST identify attributes before checking for head lines. A line starting at column 0 with a `:` is an attribute, even if the value contains a time pattern.
+
+Example of correct parsing:
+
+```
+📝 12:34:56
+Deadline: 2026-03-01 12:00:00    ← This is an attribute (has colon before time)
+    message body
+```
+
+NOT as:
+
+```
+📝 12:34:56                       ← Item 1 head
+Deadline: 2026-03-01 12:00:00    ← Item 2 head (WRONG interpretation)
 ```
 
 ---
@@ -300,14 +332,29 @@ To detect a head line:
 
 1. Line MUST start at column 0
 2. Line MUST contain a valid `time` token
-3. Tokens after time that begin with `/` are modifiers
-4. Tokens before date/time that:
+3. Line MUST NOT contain a colon `:` before the time token (to distinguish from attributes)
+4. Tokens after time that begin with `/` are modifiers
+5. Tokens before date/time that:
 
    * do not start with `/`
    * do not match date/time regex
      → are flags
 
 If no valid time token exists, the line is NOT a head.
+
+## 8.1 Attribute Precedence
+
+When parsing lines after a head, parsers MUST check for attributes BEFORE checking for the next head. A line starting at column 0 with a `:` is an attribute, even if the value contains a time pattern.
+
+Example:
+
+```
+✅ 12:34:56
+Deadline: 2026-03-01 12:00:00    ← Attribute (colon before time pattern)
+    payload
+```
+
+This prevents misinterpreting attribute lines as new item heads.
 
 ---
 
@@ -341,6 +388,8 @@ Author: Lenik
 
 
 📝 12:34:56
+Message-Type: Simple
+Deadline: 2026-03-01 12:00:00
     message
     this is a note
 
@@ -357,6 +406,12 @@ Author: Lenik
         phpinfo();
     ?>
 ```
+
+Note:
+* Superheader attributes (`Date`, `Author`) start at column 0
+* Item attributes (`Message-Type`, `Deadline`) start at column 0, immediately after the head
+* Payload is indented
+* Items are separated by blank lines
 
 ---
 
