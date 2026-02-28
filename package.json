@@ -1,0 +1,255 @@
+{
+  "name": "chronoarchive",
+  "displayName": "ChronoArchive",
+  "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
+  "version": "1.0.0",
+  "publisher": "chronoarchive",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onLanguage:chronoarchive"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "chronoarchive",
+        "aliases": [
+          "ChronoArchive",
+          "chronoarchive"
+        ],
+        "extensions": [
+          ".car"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/icon-light.svg",
+          "dark": "./icons/icon-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "chronoarchive",
+        "scopeName": "source.chronoarchive",
+        "path": "./syntaxes/chronoarchive.tmLanguage.json"
+      }
+    ],
+    "semanticTokenTypes": [
+      {
+        "id": "flag",
+        "description": "Flags in chronoarchive head lines (e.g., 📝, ✅, TODO)"
+      },
+      {
+        "id": "datetime",
+        "description": "Date and time tokens in head lines"
+      },
+      {
+        "id": "modifier",
+        "description": "Modifiers in head lines (e.g., /prompt, /php, /lang=python)"
+      },
+      {
+        "id": "attributeName",
+        "description": "Attribute names in superheaders and item attributes"
+      },
+      {
+        "id": "attributeValue",
+        "description": "Attribute values in superheaders and item attributes"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "chronoarchive",
+        "scopes": {
+          "flag": [
+            "keyword.control.chronoarchive"
+          ],
+          "datetime": [
+            "constant.numeric.chronoarchive"
+          ],
+          "modifier": [
+            "entity.other.attribute-name.chronoarchive"
+          ],
+          "attributeName": [
+            "variable.other.chronoarchive"
+          ],
+          "attributeValue": [
+            "string.unquoted.chronoarchive"
+          ]
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "chronoarchive.toggleDone",
+        "title": "Toggle Done Flag",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleIgnored",
+        "title": "Toggle Ignored Flag",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleExclamation",
+        "title": "Toggle Exclamation Flag",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.setPriority1",
+        "title": "Set Priority 1 Star",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.setPriority2",
+        "title": "Set Priority 2 Stars",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.setPriority3",
+        "title": "Set Priority 3 Stars",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.setPriority4",
+        "title": "Set Priority 4 Stars",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.setPriority5",
+        "title": "Set Priority 5 Stars",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.moveItemUp",
+        "title": "Move Item Up",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.moveItemDown",
+        "title": "Move Item Down",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.addItemAfter",
+        "title": "Add Item After Current",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.addItemBefore",
+        "title": "Add Item Before Current",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.addItemAtEnd",
+        "title": "Add Item at End of File",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.deleteItem",
+        "title": "Delete Current Item",
+        "category": "ChronoArchive"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "chronoarchive.toggleDone",
+        "key": "ctrl+-",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleIgnored",
+        "key": "ctrl+/",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleExclamation",
+        "key": "ctrl+!",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.setPriority1",
+        "key": "ctrl+1",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.setPriority2",
+        "key": "ctrl+2",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.setPriority3",
+        "key": "ctrl+3",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.setPriority4",
+        "key": "ctrl+4",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.setPriority5",
+        "key": "ctrl+5",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.moveItemUp",
+        "key": "ctrl+alt+up",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.moveItemDown",
+        "key": "ctrl+alt+down",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.addItemAfter",
+        "key": "ctrl+p",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.addItemBefore",
+        "key": "ctrl+shift+p",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.addItemAtEnd",
+        "key": "ctrl+alt+=",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.deleteItem",
+        "key": "ctrl+d",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.1.0"
+  }
+}

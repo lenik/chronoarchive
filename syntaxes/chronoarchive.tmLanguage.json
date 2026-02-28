@@ -1,0 +1,203 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "ChronoArchive",
+  "scopeName": "source.chronoarchive",
+  "patterns": [
+    {
+      "include": "#superheader"
+    },
+    {
+      "include": "#item"
+    }
+  ],
+  "repository": {
+    "superheader": {
+      "name": "meta.superheader.chronoarchive",
+      "begin": "^(?!\\s)(?=.*:)(?!.*\\b\\d{2}:\\d{2}\\b)",
+      "end": "^(?=\\S.*\\b\\d{2}:\\d{2}\\b)|^$",
+      "patterns": [
+        {
+          "include": "#attribute-line"
+        }
+      ]
+    },
+    "item": {
+      "name": "meta.item.chronoarchive",
+      "begin": "^(?!\\s)(?=.*\\b\\d{2}:\\d{2}\\b)",
+      "end": "^(?=\\S.*\\b\\d{2}:\\d{2}\\b)|^(?=\\S.*:.*$)|^(?!\\s+$)|\\Z",
+      "beginCaptures": {
+        "0": {
+          "patterns": [
+            {
+              "include": "#head-line"
+            }
+          ]
+        }
+      },
+      "contentName": "meta.item.payload.chronoarchive",
+      "patterns": [
+        {
+          "include": "#item-attributes"
+        },
+        {
+          "include": "#payload"
+        }
+      ]
+    },
+    "head-line": {
+      "name": "meta.head.chronoarchive",
+      "patterns": [
+        {
+          "include": "#flag"
+        },
+        {
+          "include": "#date"
+        },
+        {
+          "include": "#time"
+        },
+        {
+          "include": "#modifier"
+        }
+      ]
+    },
+    "flag": {
+      "name": "keyword.control.chronoarchive",
+      "match": "^(\\S+?)(?=\\s+\\d{2}:\\d{2}|\\s+\\d{4}-\\d{2}-\\d{2}|\\s+\\d{4}/\\d{2}/\\d{2})",
+      "captures": {
+        "1": {
+          "name": "keyword.control.chronoarchive"
+        }
+      }
+    },
+    "date": {
+      "name": "constant.numeric.date.chronoarchive",
+      "match": "\\b(\\d{4}[-/]\\d{2}[-/]\\d{2})\\b",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.date.chronoarchive"
+        }
+      }
+    },
+    "time": {
+      "name": "constant.numeric.time.chronoarchive",
+      "match": "\\b(\\d{2}:\\d{2}(?::\\d{2})?)\\b",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.time.chronoarchive"
+        }
+      }
+    },
+    "modifier": {
+      "name": "entity.other.attribute-name.chronoarchive",
+      "match": "(\\/\\S+)",
+      "captures": {
+        "1": {
+          "name": "entity.other.attribute-name.chronoarchive"
+        }
+      }
+    },
+    "attribute-line": {
+      "name": "meta.attribute.chronoarchive",
+      "match": "^\\s*(\\S[^:]*?)\\s*:\\s*(.*)$",
+      "captures": {
+        "1": {
+          "name": "variable.other.chronoarchive"
+        },
+        "2": {
+          "name": "string.unquoted.chronoarchive"
+        }
+      }
+    },
+    "item-attributes": {
+      "name": "meta.item.attributes.chronoarchive",
+      "begin": "^(?!\\s*$)(?=\\s+\\S.*:)",
+      "end": "^(?!\\s+\\S.*:)",
+      "patterns": [
+        {
+          "include": "#attribute-line"
+        }
+      ]
+    },
+    "payload": {
+      "name": "meta.payload.chronoarchive",
+      "begin": "^(?=\\s+\\S)",
+      "end": "^(?!\\s)|\\Z",
+      "contentName": "string.unquoted.payload.chronoarchive",
+      "patterns": [
+        {
+          "include": "#payload-content"
+        }
+      ]
+    },
+    "payload-content": {
+      "patterns": [
+        {
+          "include": "#injection-php"
+        },
+        {
+          "include": "#injection-json"
+        },
+        {
+          "include": "#injection-javascript"
+        },
+        {
+          "include": "#injection-python"
+        },
+        {
+          "include": "#injection-bash"
+        }
+      ]
+    },
+    "injection-php": {
+      "begin": "(?<=/php)(?=\\s*\\n\\s*<\\?)",
+      "end": "^\\s*(?=\\S)|\\Z",
+      "contentName": "embedding.php",
+      "patterns": [
+        {
+          "include": "source.php"
+        }
+      ]
+    },
+    "injection-json": {
+      "begin": "(?<=/json)(?=\\s*\\n\\s*[{\\[])",
+      "end": "^\\s*(?=\\S)|\\Z",
+      "contentName": "embedding.json",
+      "patterns": [
+        {
+          "include": "source.json"
+        }
+      ]
+    },
+    "injection-javascript": {
+      "begin": "(?<=/javascript|/js)(?=\\s*\\n)",
+      "end": "^\\s*(?=\\S)|\\Z",
+      "contentName": "embedding.javascript",
+      "patterns": [
+        {
+          "include": "source.js"
+        }
+      ]
+    },
+    "injection-python": {
+      "begin": "(?<=/python)(?=\\s*\\n)",
+      "end": "^\\s*(?=\\S)|\\Z",
+      "contentName": "embedding.python",
+      "patterns": [
+        {
+          "include": "source.python"
+        }
+      ]
+    },
+    "injection-bash": {
+      "begin": "(?<=/bash)(?=\\s*\\n)",
+      "end": "^\\s*(?=\\S)|\\Z",
+      "contentName": "embedding.shell",
+      "patterns": [
+        {
+          "include": "source.shell"
+        }
+      ]
+    }
+  }
+}

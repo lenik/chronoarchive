@@ -1,0 +1,20 @@
+Date: 2022-03-04
+Author: Lenik
+
+
+📝 12:34:56
+    message
+    ...
+
+✅ 12:45:00      /prompt
+    write a program about weather analysis.
+    
+    1. Qt based
+    2. Access local proxy to fetch info
+
+✅ 12:56:12      /php
+    # use this to dump connection/remote info.
+    <?php
+        phpinfo();
+    ?>
+

@@ -1,0 +1,31 @@
+# Compiled output
+out/
+dist/
+
+# Dependencies
+node_modules/
+
+# Test artifacts
+.vscode-test/
+*.vsix
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Build
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
