@@ -51,13 +51,23 @@ export function parse(content: string): ParseResult {
       break;
     }
     
-    // Check if this is an item head (starts at column 0 with time)
+    // Check if this is an item head (starts at column 0, has time NOT preceded by colon)
+    // Time in attribute values (after colon) should NOT be treated as item head
     if (PATTERNS.atColumnZero.test(line) && PATTERNS.time.test(line)) {
-      break;
+      // Check if time appears after a colon (attribute value) - if so, it's not an item head
+      const timeMatch = line.match(PATTERNS.time);
+      if (timeMatch) {
+        const timeIndex = timeMatch.index ?? 0;
+        const beforeTime = line.substring(0, timeIndex);
+        // If there's a colon before the time, this is an attribute line, not an item head
+        if (!beforeTime.includes(':')) {
+          break;
+        }
+      }
     }
     
-    // Try to parse as attribute (must start at column 0)
-    if (PATTERNS.atColumnZero.test(line) && line.includes(':')) {
+    // Try to parse as attribute (line with colon, may have leading whitespace)
+    if (line.trim().length > 0 && line.includes(':')) {
       const attr = parseAttributeLine(line, currentLine);
       if (attr) {
         superheader.push(attr);
@@ -282,7 +292,8 @@ function parseHeadLine(
   }
   
   // Find modifiers (tokens starting with /)
-  const modifierMatches = line.match(PATTERNS.modifier);
+  const modifierRegex = /\/\S+/g;
+  const modifierMatches = line.match(modifierRegex);
   if (modifierMatches) {
     modifiers.push(...modifierMatches);
   }
