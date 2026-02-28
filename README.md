@@ -10,7 +10,9 @@ Language support for chronoarchive (`.car`) files - a structured, line-oriented 
 - **Diagnostics**: Validation for missing time tokens, empty payloads, and malformed items
 - **Document Symbols**: Outline view showing all items in the file
 - **CodeLens**: Quick actions for `/prompt` items
-- **Keyboard Shortcuts**: Powerful shortcuts for item manipulation and flag management
+- **Keyboard Shortcuts**: Comprehensive shortcuts for flag cycling, item navigation, and manipulation
+- **Smart Item Movement**: Preserve cursor position when moving items
+- **Auto-Optimization**: Automatically manage blank lines between items
 
 ## Installation
 
@@ -25,21 +27,32 @@ Create a `.car` file and start writing structured items:
 
 ## Keyboard Shortcuts
 
-### Flag Management
+### Cycling Flags
+
+Press repeatedly to cycle through flag variants. After the last flag, the next press toggles off.
+
+| Shortcut | Flag Cycle | Description |
+|----------|------------|-------------|
+| `Ctrl+/` | ☑️ → ✅ → 🎉 → off | Cycle Done flags |
+| `Ctrl+'` | ❌ → ❎ → 🗑️ → off | Cycle Closed flags |
+| `Ctrl+Shift+/` | 🟡 → ⏱️ → ⌛ → 🚧 → 🔄 → 🛠️ → off | Cycle Pending flags |
+| `Ctrl+Shift+\` | 📝 → 📍 → 📌 → off | Cycle Importance flags |
+| `Ctrl+Shift+'` | ⚠️ → ‼️ → 🔥 → off | Cycle Attention flags |
+
+### Single Toggle Flags
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+-` | Toggle done flag (✅) |
-| `Ctrl+/` | Toggle ignored flag (-) |
-| `Ctrl+!` | Toggle exclamation flag (!) |
 | `Ctrl+1` ~ `Ctrl+5` | Set priority (1-5 stars ⭐) |
 
 ### Item Navigation
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Alt+Up` | Move item up |
-| `Ctrl+Alt+Down` | Move item down |
+| `Ctrl+K` | Jump to previous item (cursor at payload) |
+| `Ctrl+J` | Jump to next item (cursor at payload) |
+| `Alt+K` | Move item up |
+| `Alt+J` | Move item down |
 
 ### Item Creation
 
@@ -53,7 +66,13 @@ Create a `.car` file and start writing structured items:
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+D` | Delete current item (with confirmation) |
+| `Ctrl+Delete` | Delete current item (with confirmation) |
+
+### Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `chronoarchive.blankLinesBetweenItems` | `1` | Number of blank lines between items (0-3) |
 
 ## Quick Start
 

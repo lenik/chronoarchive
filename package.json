@@ -154,22 +154,89 @@
         "command": "chronoarchive.deleteItem",
         "title": "Delete Current Item",
         "category": "ChronoArchive"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "chronoarchive.toggleDone",
-        "key": "ctrl+-",
-        "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
-        "command": "chronoarchive.toggleIgnored",
+        "command": "chronoarchive.jumpToNextItem",
+        "title": "Jump to Next Item",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.jumpToPreviousItem",
+        "title": "Jump to Previous Item",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleDoneCycle",
+        "title": "Cycle Done Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleClosedCycle",
+        "title": "Cycle Closed Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.togglePendingCycle",
+        "title": "Cycle Pending Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleImportanceCycle",
+        "title": "Cycle Importance Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleAttentionCycle",
+        "title": "Cycle Attention Flags",
+        "category": "ChronoArchive"
+      }
+    ],
+    "configuration": {
+      "title": "ChronoArchive",
+      "properties": {
+        "chronoarchive.blankLinesBetweenItems": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 3,
+          "description": "Number of blank lines to preserve between items. Extra blank lines will be removed."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "chronoarchive.toggleDoneCycle",
         "key": "ctrl+/",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
         "command": "chronoarchive.toggleExclamation",
-        "key": "ctrl+!",
+        "key": "ctrl+shift+1",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleClosedCycle",
+        "key": "ctrl+'",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.togglePendingCycle",
+        "key": "ctrl+shift+/",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleImportanceCycle",
+        "key": "ctrl+shift+\\",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleAttentionCycle",
+        "key": "ctrl+shift+'",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "-editor.action.quickFix",
+        "key": "ctrl+1",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
@@ -199,12 +266,12 @@
       },
       {
         "command": "chronoarchive.moveItemUp",
-        "key": "ctrl+alt+up",
+        "key": "alt+k",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
         "command": "chronoarchive.moveItemDown",
-        "key": "ctrl+alt+down",
+        "key": "alt+j",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
@@ -224,7 +291,17 @@
       },
       {
         "command": "chronoarchive.deleteItem",
-        "key": "ctrl+d",
+        "key": "ctrl+delete",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.jumpToNextItem",
+        "key": "ctrl+j",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.jumpToPreviousItem",
+        "key": "ctrl+k",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       }
     ]

@@ -4,6 +4,7 @@ dist/
 
 # Dependencies
 node_modules/
+pnpm-lock.yaml
 
 # Test artifacts
 .vscode-test/

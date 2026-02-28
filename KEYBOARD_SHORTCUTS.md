@@ -4,23 +4,46 @@ Quick reference card for all ChronoArchive keyboard shortcuts.
 
 ## Flag Management
 
+### Cycling Flags
+
+These shortcuts cycle through multiple flag variants in order, toggling off after the last one.
+
+| Shortcut | Command | Flag Cycle | Description |
+|----------|---------|------------|-------------|
+| `Ctrl+-/ | `chronoarchive.toggleDoneCycle` | ☑️ → ✅ → 🎉 → (off) | Cycle Done flags |
+| `Ctrl+'` | `chronoarchive.toggleClosedCycle` | ❌ → ❎ → 🗑️ → (off) | Cycle Closed flags |
+| `Ctrl+Shift+/` | `chronoarchive.togglePendingCycle` | 🟡 → ⏱️ → ⌛ → 🚧 → 🔄 → 🛠️ → (off) | Cycle Pending flags |
+| `Ctrl+Shift+\` | `chronoarchive.toggleImportanceCycle` | 📝 → 📍 → 📌 → (off) | Cycle Importance flags |
+| `Ctrl+Shift+'` | `chronoarchive.toggleAttentionCycle` | ⚠️ → ‼️ → 🔥 → (off) | Cycle Attention flags |
+
+### Single Toggle Flags
+
 | Shortcut | Command | Description |
 |----------|---------|-------------|
-| `Ctrl+-` | `chronoarchive.toggleDone` | Toggle done flag (✅) on/off |
-| `Ctrl+/` | `chronoarchive.toggleIgnored` | Toggle ignored flag (-) on/off |
-| `Ctrl+!` | `chronoarchive.toggleExclamation` | Toggle exclamation flag (!) on/off |
 | `Ctrl+1` | `chronoarchive.setPriority1` | Set priority to 1 star (⭐) |
 | `Ctrl+2` | `chronoarchive.setPriority2` | Set priority to 2 stars (⭐⭐) |
 | `Ctrl+3` | `chronoarchive.setPriority3` | Set priority to 3 stars (⭐⭐⭐) |
 | `Ctrl+4` | `chronoarchive.setPriority4` | Set priority to 4 stars (⭐⭐⭐⭐) |
 | `Ctrl+5` | `chronoarchive.setPriority5` | Set priority to 5 stars (⭐⭐⭐⭐⭐) |
 
+**Notes:**
+- **Double-Press Toggle:** Press the same priority key (Ctrl+1 through Ctrl+5) twice quickly to toggle stars off completely.
+- **Cycling Behavior:** Press cycling shortcuts repeatedly to advance through the flag sequence. After the last flag, the next press toggles all flags off.
+
 ## Item Navigation
 
 | Shortcut | Command | Description |
 |----------|---------|-------------|
-| `Ctrl+Alt+Up` | `chronoarchive.moveItemUp` | Move current item up in the file |
-| `Ctrl+Alt+Down` | `chronoarchive.moveItemDown` | Move current item down in the file |
+| `Alt+K` | `chronoarchive.moveItemUp` | Move current item up in the file |
+| `Alt+J` | `chronoarchive.moveItemDown` | Move current item down in the file |
+| `Ctrl+Alt+Up` | `chronoarchive.moveItemUp` | Move current item up (alternative) |
+| `Ctrl+Alt+Down` | `chronoarchive.moveItemDown` | Move current item down (alternative) |
+| `Ctrl+K` | `chronoarchive.jumpToPreviousItem` | Jump to previous item (cursor at payload) |
+| `Ctrl+J` | `chronoarchive.jumpToNextItem` | Jump to next item (cursor at payload) |
+
+**Note:** 
+- The Ctrl+Alt+Up/Down shortcuts are designed to override system settings when editing chronoarchive files.
+- Jump commands (Ctrl+K/J) place the cursor at the beginning of the payload section for immediate editing.
 
 ## Item Creation
 
@@ -34,14 +57,21 @@ Quick reference card for all ChronoArchive keyboard shortcuts.
 
 | Shortcut | Command | Description |
 |----------|---------|-------------|
-| `Ctrl+D` | `chronoarchive.deleteItem` | Delete current item (with confirmation) |
+| `Ctrl+Delete` | `chronoarchive.deleteItem` | Delete current item (with confirmation) |
 
 ## Usage Examples
 
-### Mark a task as done
-1. Place cursor anywhere in the item
-2. Press `Ctrl+-` to add ✅ flag
-3. Press again to remove it
+### Cycle through Done flags
+1. Place cursor in the item
+2. Press `Ctrl+-/ to cycle: ☑️ → ✅ → 🎉 → (off)
+3. Each press advances to the next flag
+4. After the last flag (🎉), press again to toggle off
+
+### Cycle through other flag types
+- **Closed:** `Ctrl+'` cycles through ❌ → ❎ → 🗑️ → (off)
+- **Pending:** `Ctrl+Shift+/` cycles through 🟡 → ⏱️ → ⌛ → 🚧 → 🔄 → 🛠️ → (off)
+- **Importance:** `Ctrl+Shift+\` cycles through 📝 → 📍 → 📌 → (off)
+- **Attention:** `Ctrl+Shift+'` cycles through ⚠️ → ‼️ → 🔥 → (off)
 
 ### Set priority
 1. Place cursor in the item
@@ -50,8 +80,8 @@ Quick reference card for all ChronoArchive keyboard shortcuts.
 
 ### Reorder items
 1. Place cursor in the item to move
-2. Press `Ctrl+Alt+Up` to move up
-3. Press `Ctrl+Alt+Down` to move down
+2. Press `Alt+K` to move up
+3. Press `Alt+J` to move down
 
 ### Quick add new items
 - While working: `Ctrl+P` (add after current)
@@ -60,8 +90,40 @@ Quick reference card for all ChronoArchive keyboard shortcuts.
 
 ### Delete an item
 1. Place cursor in the item
-2. Press `Ctrl+D`
+2. Press `Ctrl+Delete`
 3. Confirm deletion in the dialog
+
+### Jump between items
+1. Press `Ctrl+J` to jump to next item
+2. Press `Ctrl+K` to jump to previous item
+3. Cursor lands at the payload for immediate editing
+
+## Settings
+
+ChronoArchive provides configurable settings to customize behavior:
+
+### Blank Lines Between Items
+
+**Setting:** `chronoarchive.blankLinesBetweenItems`  
+**Default:** `1`  
+**Range:** `0-3`
+
+Controls the number of blank lines preserved between items. Extra blank lines beyond this setting will be automatically removed when inserting or deleting items.
+
+To change this setting:
+
+1. Open Settings (File → Preferences → Settings)
+2. Search for "chronoarchive"
+3. Find "Blank Lines Between Items"
+4. Set your preferred value (0-3)
+
+Or edit `settings.json` directly:
+
+```json
+{
+  "chronoarchive.blankLinesBetweenItems": 2
+}
+```
 
 ## Customizing Shortcuts
 
@@ -90,6 +152,11 @@ Or edit `keybindings.json` directly:
 - All shortcuts only work when editing `.car` files
 - Cursor must be inside a valid item for most commands
 - Priority stars replace existing stars (not additive)
+- **Double-press the same priority key (Ctrl+1-5) to toggle stars off**
 - Flag toggles are smart (add if missing, remove if present)
-- Move item commands preserve all formatting and blank lines
+- Move item commands preserve cursor position within the content
+- Move item commands optimize blank lines according to settings
 - Delete command shows confirmation dialog to prevent accidents
+- **New items are created with empty modifiers and focus on payload editing**
+- **Blank lines between items are configurable** (see Settings below)
+- **Jump commands (Ctrl+K/J) navigate between items and position cursor at payload start**
