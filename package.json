@@ -142,6 +142,16 @@
         "category": "ChronoArchive"
       },
       {
+        "command": "chronoarchive.moveLineUp",
+        "title": "Move Line Up",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.moveLineDown",
+        "title": "Move Line Down",
+        "category": "ChronoArchive"
+      },
+      {
         "command": "chronoarchive.addItemAfter",
         "title": "Add Item After Current",
         "category": "ChronoArchive"
@@ -318,6 +328,16 @@
       {
         "command": "chronoarchive.moveItemDown",
         "key": "alt+j",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.moveLineUp",
+        "key": "alt+up",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.moveLineDown",
+        "key": "alt+down",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {

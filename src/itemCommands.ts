@@ -63,6 +63,18 @@ export function registerItemCommands(): vscode.Disposable[] {
     })
   );
 
+  // Move line up/down (exact line swap, no re-indent)
+  disposables.push(
+    vscode.commands.registerCommand('chronoarchive.moveLineUp', async () => {
+      await moveLine('up');
+    })
+  );
+  disposables.push(
+    vscode.commands.registerCommand('chronoarchive.moveLineDown', async () => {
+      await moveLine('down');
+    })
+  );
+
   // Add item after current
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.addItemAfter', async () => {
@@ -377,6 +389,43 @@ async function setPriority(stars: number): Promise<void> {
 }
 
 /**
+ * Move current line up or down by swapping with adjacent line.
+ * Preserves exact line text (no re-indentation).
+ */
+async function moveLine(direction: 'up' | 'down'): Promise<void> {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) return;
+  if (editor.document.languageId !== 'chronoarchive') return;
+
+  const lineIndex = editor.selection.active.line;
+  const doc = editor.document;
+  const lineCount = doc.lineCount;
+  const eol = doc.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';
+
+  if (direction === 'up') {
+    if (lineIndex === 0) return;
+    const prevLine = doc.lineAt(lineIndex - 1);
+    const currLine = doc.lineAt(lineIndex);
+    const range = new vscode.Range(lineIndex - 1, 0, lineIndex, currLine.text.length);
+    const newText = currLine.text + eol + prevLine.text;
+    await editor.edit(editBuilder => editBuilder.replace(range, newText));
+    const newCursorLine = lineIndex - 1;
+    const character = Math.min(editor.selection.active.character, doc.lineAt(newCursorLine).text.length);
+    editor.selection = new vscode.Selection(newCursorLine, character, newCursorLine, character);
+  } else {
+    if (lineIndex >= lineCount - 1) return;
+    const currLine = doc.lineAt(lineIndex);
+    const nextLine = doc.lineAt(lineIndex + 1);
+    const range = new vscode.Range(lineIndex, 0, lineIndex + 1, nextLine.text.length);
+    const newText = nextLine.text + eol + currLine.text;
+    await editor.edit(editBuilder => editBuilder.replace(range, newText));
+    const newCursorLine = lineIndex + 1;
+    const character = Math.min(editor.selection.active.character, doc.lineAt(newCursorLine).text.length);
+    editor.selection = new vscode.Selection(newCursorLine, character, newCursorLine, character);
+  }
+}
+
+/**
  * Move current item up or down
  */
 async function moveItem(direction: 'up' | 'down'): Promise<void> {
@@ -425,8 +474,10 @@ async function moveItem(direction: 'up' | 'down'): Promise<void> {
   // Calculate how many lines will be in the moved item after insertion
   const blankLines = getBlankLinesConfig();
 
-  const itemLines = content.split('\n').slice(item.startLine, item.endLine);
-  const targetLines = content.split('\n').slice(targetItem.startLine, targetItem.endLine);
+  // Use same line split as parser (/\r?\n/) so startLine/endLine indices match; preserves exact line text including indentation
+  const allLines = content.split(/\r?\n/);
+  const itemLines = allLines.slice(item.startLine, item.endLine);
+  const targetLines = allLines.slice(targetItem.startLine, targetItem.endLine);
 
   if (blankLines > 0) {
     // Strip trailing blank lines from items
@@ -437,9 +488,6 @@ async function moveItem(direction: 'up' | 'down'): Promise<void> {
         targetLines.pop();
     }
   }
-
-  // Get all lines of the document
-  const allLines = content.split('\n');
   
   // Build new document
   let newLines: string[];
@@ -493,10 +541,11 @@ async function moveItem(direction: 'up' | 'down'): Promise<void> {
   }
   
   const newCursorLine = newItemStartLine + cursorOffsetInItem;
-  const newContent = newLines.join('\n');
+  const eol = editor.document.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';
+  const newContent = newLines.join(eol);
 
   await editor.edit(editBuilder => {
-    // Replace entire document
+    // Replace entire document (preserve EOL and exact line text)
     const start = new vscode.Position(0, 0);
     const end = new vscode.Position(editor.document.lineCount, 0);
     editBuilder.replace(new vscode.Range(start, end), newContent);
