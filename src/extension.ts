@@ -6,6 +6,7 @@ import { createDiagnosticsProvider } from './diagnostics';
 import { createDocumentSymbolProvider } from './symbols';
 import { createCodeLensProvider, registerCodeLensCommands } from './codeLens';
 import { registerItemCommands } from './itemCommands';
+import { openDailyLog } from './dailyLog';
 
 /**
  * Called when the extension is activated
@@ -28,6 +29,11 @@ export function activate(context: vscode.ExtensionContext): void {
   // Register item manipulation commands
   const itemCommandDisposables = registerItemCommands();
   context.subscriptions.push(...itemCommandDisposables);
+  
+  // Register daily log command (works without .car open)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('chronoarchive.openDailyLog', openDailyLog)
+  );
   
   // Register additional commands
   const generalCommands = registerGeneralCommands(outputChannel);

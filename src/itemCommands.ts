@@ -140,6 +140,27 @@ export function registerItemCommands(): vscode.Disposable[] {
     })
   );
 
+  // Cycling toggle for Drink flags (Ctrl+@)
+  disposables.push(
+    vscode.commands.registerCommand('chronoarchive.toggleDrinkCycle', async () => {
+      await cycleFlag(['☕️', '🍵', '🍼', '🍻', '🍹', '🍷']);
+    })
+  );
+
+  // Cycling toggle for Good emotion flags (Ctrl+))
+  disposables.push(
+    vscode.commands.registerCommand('chronoarchive.toggleGoodEmotionCycle', async () => {
+      await cycleFlag(['💕', '🤏', '☺️', '😃', '👍', '😍', '😘']);
+    })
+  );
+
+  // Cycling toggle for Bad emotion flags (Ctrl+()
+  disposables.push(
+    vscode.commands.registerCommand('chronoarchive.toggleBadEmotionCycle', async () => {
+      await cycleFlag(['🥺', '🫩', '😂', '🤣', '😭', '😅', '💀']);
+    })
+  );
+
   return disposables;
 }
 
@@ -246,7 +267,8 @@ async function cycleFlag(flagList: string[]): Promise<void> {
     // No flag from the list exists, add the first one
     
     // Remove all known flag emoji from the head line
-    const flagPattern = /[☑✅🎉❌❎🗑🟡⏱⌛🚧🔄🛠📝📍📌⚠‼🔥]/gu;
+    // include optional U+FE0E/U+FE0F variation selectors
+    const flagPattern = /[☑✅🎉❌❎🗑🟡⏱⌛🚧🔄🛠📝📍📌⚠‼🔥☕🍵🍼🍻🍹🍷💕🤏☺😃👍😍😘🥺🫩😂🤣😭😅💀][\uFE0E\uFE0F]?/gu;
     headText = headText.replace(flagPattern, '').trim();
     
     const flag = flagList[0];
@@ -656,10 +678,20 @@ async function addNewItem(position: 'before' | 'after' | 'end'): Promise<void> {
 
     if (position === 'after') {
       // Insert at the beginning of the line after the current item ends
-      // This avoids auto-indentation from the previous line
-      insertPosition = new vscode.Position(item.endLine, 0);
-      prefix = ''; // No prefix needed, we're at column 0
-      suffix = '\n'.repeat(blankLines); // Extra blank line after new item
+      let lineToInsert = item.endLine;
+      const doc = editor.document;
+      if (lineToInsert >= doc.lineCount) {
+        // Last item runs to end of file; ensure trailing newline so we insert on a new line
+        const lastLineIdx = doc.lineCount - 1;
+        const lastLineText = doc.lineAt(lastLineIdx).text;
+        await editor.edit(editBuilder => {
+          editBuilder.insert(new vscode.Position(lastLineIdx, lastLineText.length), '\n');
+        });
+        lineToInsert = editor.document.lineCount - 1; // new line index after the edit
+      }
+      insertPosition = new vscode.Position(lineToInsert, 0);
+      prefix = '';
+      suffix = '\n'.repeat(blankLines);
     } else { // before
       // Insert at the beginning of the current item's first line
       insertPosition = new vscode.Position(item.startLine, 0);

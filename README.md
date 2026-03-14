@@ -38,6 +38,15 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 | `Ctrl+Shift+/` | 🟡 → ⏱️ → ⌛ → 🚧 → 🔄 → 🛠️ → off | Cycle Pending flags |
 | `Ctrl+Shift+\` | 📝 → 📍 → 📌 → off | Cycle Importance flags |
 | `Ctrl+Shift+'` | ⚠️ → ‼️ → 🔥 → off | Cycle Attention flags |
+| `Ctrl+@` | ☕️ → 🍵 → 🍼 → 🍻 → 🍹 → 🍷 → off | Cycle Drink flags |
+| `Ctrl+)` | 💕 → 🤏 → ☺️ → 😃 → 👍 → 😍 → 😘 → off | Cycle Good emotion flags |
+| `Ctrl+(` | 🥺 → 🫩 → 😂 → 🤣 → 😭 → 😅 → 💀 → off | Cycle Bad emotion flags |
+
+### Daily Logs
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Alt+D` | Create and open today's daily log (`.car`) at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car` |
 
 ### Single Toggle Flags
 

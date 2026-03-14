@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "publisher": "lenik",
   "repository": {
     "type": "git",
@@ -16,7 +16,8 @@
     "Snippets"
   ],
   "activationEvents": [
-    "onLanguage:chronoarchive"
+    "onLanguage:chronoarchive",
+    "onCommand:chronoarchive.openDailyLog"
   ],
   "main": "./dist/extension.js",
   "icon": "icons/icon.png",
@@ -194,6 +195,26 @@
         "command": "chronoarchive.toggleAttentionCycle",
         "title": "Cycle Attention Flags",
         "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleDrinkCycle",
+        "title": "Cycle Drink Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleGoodEmotionCycle",
+        "title": "Cycle Good Emotion Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.toggleBadEmotionCycle",
+        "title": "Cycle Bad Emotion Flags",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLog",
+        "title": "Open Daily Log",
+        "category": "ChronoArchive"
       }
     ],
     "configuration": {
@@ -205,6 +226,11 @@
           "minimum": 0,
           "maximum": 3,
           "description": "Number of blank lines to preserve between items. Extra blank lines will be removed."
+        },
+        "chronoarchive.dailyLogsRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Root folder for daily log files. File path: <root>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car. Empty = platform default: Linux: XDG_DOCUMENTS_DIR or ~/Documents, then 'Daily Logs'; Windows: %USERPROFILE%\\Documents\\Daily Logs"
         }
       }
     },
@@ -215,8 +241,18 @@
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
-        "command": "chronoarchive.toggleExclamation",
-        "key": "ctrl+shift+1",
+        "command": "chronoarchive.toggleDrinkCycle",
+        "key": "ctrl+shift+2",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleGoodEmotionCycle",
+        "key": "ctrl+shift+0",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.toggleBadEmotionCycle",
+        "key": "ctrl+shift+9",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
@@ -308,6 +344,16 @@
         "command": "chronoarchive.jumpToPreviousItem",
         "key": "ctrl+k",
         "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLog",
+        "key": "ctrl+alt+d",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "chronoarchive.openDailyLog",
+        "key": "alt+meta+d",
+        "when": "editorTextFocus"
       }
     ]
   },

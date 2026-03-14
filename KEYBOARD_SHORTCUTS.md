@@ -15,6 +15,9 @@ These shortcuts cycle through multiple flag variants in order, toggling off afte
 | `Ctrl+Shift+/` | `chronoarchive.togglePendingCycle` | 🟡 → ⏱️ → ⌛ → 🚧 → 🔄 → 🛠️ → (off) | Cycle Pending flags |
 | `Ctrl+Shift+\` | `chronoarchive.toggleImportanceCycle` | 📝 → 📍 → 📌 → (off) | Cycle Importance flags |
 | `Ctrl+Shift+'` | `chronoarchive.toggleAttentionCycle` | ⚠️ → ‼️ → 🔥 → (off) | Cycle Attention flags |
+| `Ctrl+@` | `chronoarchive.toggleDrinkCycle` | ☕️ → 🍵 → 🍼 → 🍻 → 🍹 → 🍷 → (off) | Cycle Drink flags |
+| `Ctrl+)` | `chronoarchive.toggleGoodEmotionCycle` | 💕 → 🤏 → ☺️ → 😃 → 👍 → 😍 → 😘 → (off) | Cycle Good emotion flags |
+| `Ctrl+(` | `chronoarchive.toggleBadEmotionCycle` | 🥺 → 🫩 → 😂 → 🤣 → 😭 → 😅 → 💀 → (off) | Cycle Bad emotion flags |
 
 ### Single Toggle Flags
 
@@ -45,6 +48,14 @@ These shortcuts cycle through multiple flag variants in order, toggling off afte
 - The Ctrl+Alt+Up/Down shortcuts are designed to override system settings when editing chronoarchive files.
 - Jump commands (Ctrl+K/J) place the cursor at the beginning of the payload section for immediate editing.
 
+## Daily Logs
+
+| Shortcut | Command | Description |
+|----------|---------|-------------|
+| `Ctrl+Alt+D` | `chronoarchive.openDailyLog` | Create and open today's daily log file |
+
+The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If it already exists, it is opened. Configure the root in Settings → ChronoArchive → Daily Logs Root (empty = platform default).
+
 ## Item Creation
 
 | Shortcut | Command | Description |
@@ -72,6 +83,9 @@ These shortcuts cycle through multiple flag variants in order, toggling off afte
 - **Pending:** `Ctrl+Shift+/` cycles through 🟡 → ⏱️ → ⌛ → 🚧 → 🔄 → 🛠️ → (off)
 - **Importance:** `Ctrl+Shift+\` cycles through 📝 → 📍 → 📌 → (off)
 - **Attention:** `Ctrl+Shift+'` cycles through ⚠️ → ‼️ → 🔥 → (off)
+- **Drink:** `Ctrl+@` cycles through ☕️ → 🍵 → 🍼 → 🍻 → 🍹 → 🍷 → (off)
+- **Good emotion:** `Ctrl+)` cycles through 💕 → 🤏 → ☺️ → 😃 → 👍 → 😍 → 😘 → (off)
+- **Bad emotion:** `Ctrl+(` cycles through 🥺 → 🫩 → 😂 → 🤣 → 😭 → 😅 → 💀 → (off)
 
 ### Set priority
 1. Place cursor in the item
@@ -117,11 +131,23 @@ To change this setting:
 3. Find "Blank Lines Between Items"
 4. Set your preferred value (0-3)
 
+### Daily Logs Root
+
+**Setting:** `chronoarchive.dailyLogsRoot`  
+**Default:** (empty = platform default)
+
+Root folder for daily log files. Path: `<root>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`.
+
+- **Linux:** `XDG_DOCUMENTS_DIR/Daily Logs/` or `~/Documents/Daily Logs/`
+- **Windows:** `%USERPROFILE%\Documents\Daily Logs`
+- **Custom:** Set to any absolute path or path relative to home (e.g. `~/Notes/Daily`). Use `~` for home directory.
+
 Or edit `settings.json` directly:
 
 ```json
 {
-  "chronoarchive.blankLinesBetweenItems": 2
+  "chronoarchive.blankLinesBetweenItems": 2,
+  "chronoarchive.dailyLogsRoot": "~/Documents/Daily Logs"
 }
 ```
 
