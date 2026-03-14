@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "lenik",
   "repository": {
     "type": "git",
@@ -231,6 +231,11 @@
           "type": "string",
           "default": "",
           "description": "Root folder for daily log files. File path: <root>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car. Empty = platform default: Linux: XDG_DOCUMENTS_DIR or ~/Documents, then 'Daily Logs'; Windows: %USERPROFILE%\\Documents\\Daily Logs"
+        },
+        "chronoarchive.dailyLogTemplatePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a custom template file for new daily logs. Use placeholders {{CREATION}} and {{TIME}}. Leave blank to use the built-in default template."
         }
       }
     },

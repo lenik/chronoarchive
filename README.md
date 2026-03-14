@@ -23,7 +23,10 @@ Language support for chronoarchive (`.car`) files - a structured, line-oriented 
 
 ## Usage
 
-Create a `.car` file and start writing structured items:
+Create a `.car` file and start writing structured items.
+
+**Daily logs:** Press **Ctrl+Alt+D** (or **Alt+Meta+D**) to create and open today's daily log. Daily logs are `.car` files organized by date under a root folder: `<root>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car` (e.g. `.../2026/2026-03/2026-03-14.car`). If the file already exists, it is opened; otherwise a new file is created from a template. In **Settings** → **ChronoArchive** you can set **Daily Logs Root** (leave blank for default: on Linux `~/Documents/Daily Logs` or `$XDG_DOCUMENTS_DIR/Daily Logs`; on Windows `%USERPROFILE%\Documents\Daily Logs`) and **Daily Log Template Path** (path to a custom template file; use placeholders `{{CREATION}}` and `{{TIME}}`; leave blank to use the built-in default).
+
 
 ## Keyboard Shortcuts
 

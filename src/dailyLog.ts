@@ -91,10 +91,28 @@ Creation: {{CREATION}}
     据说为作者👧买杯咖啡☕️很快就能获得📈巨大的成功💎呢～
 `;
 
+function getTemplateContent(): string {
+  const config = vscode.workspace.getConfiguration('chronoarchive');
+  const templatePath = config.get<string>('dailyLogTemplatePath', '');
+  if (templatePath && templatePath.trim() !== '') {
+    const resolved = expandPath(templatePath.trim());
+    const absPath = path.isAbsolute(resolved) ? resolved : path.join(os.homedir(), resolved);
+    if (fs.existsSync(absPath)) {
+      try {
+        return fs.readFileSync(absPath, 'utf8');
+      } catch {
+        // fall through to default
+      }
+    }
+  }
+  return TEMPLATE;
+}
+
 export function getDailyLogContent(date: Date): string {
   const creation = formatCreation(date);
   const time = formatTime(date);
-  return TEMPLATE.replace(/\{\{CREATION\}\}/g, creation).replace(/\{\{TIME\}\}/g, time);
+  const template = getTemplateContent();
+  return template.replace(/\{\{CREATION\}\}/g, creation).replace(/\{\{TIME\}\}/g, time);
 }
 
 export async function openDailyLog(): Promise<void> {

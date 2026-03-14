@@ -54,7 +54,7 @@ These shortcuts cycle through multiple flag variants in order, toggling off afte
 |----------|---------|-------------|
 | `Ctrl+Alt+D` | `chronoarchive.openDailyLog` | Create and open today's daily log file |
 
-The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If it already exists, it is opened. Configure the root in Settings → ChronoArchive → Daily Logs Root (empty = platform default).
+The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If it already exists, it is opened. In Settings → ChronoArchive: set **Daily Logs Root** (empty = platform default) and **Daily Log Template Path** (empty = built-in template; or path to a file with `{{CREATION}}` and `{{TIME}}` placeholders).
 
 ## Item Creation
 
@@ -142,12 +142,20 @@ Root folder for daily log files. Path: `<root>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.ca
 - **Windows:** `%USERPROFILE%\Documents\Daily Logs`
 - **Custom:** Set to any absolute path or path relative to home (e.g. `~/Notes/Daily`). Use `~` for home directory.
 
+### Daily Log Template Path
+
+**Setting:** `chronoarchive.dailyLogTemplatePath`  
+**Default:** (empty = built-in default template)
+
+Path to a custom template file used when creating a new daily log. The file can use placeholders `{{CREATION}}` (replaced with a full date/time string) and `{{TIME}}` (replaced with `HH:MM:SS`). Leave blank to use the extension’s default template.
+
 Or edit `settings.json` directly:
 
 ```json
 {
   "chronoarchive.blankLinesBetweenItems": 2,
-  "chronoarchive.dailyLogsRoot": "~/Documents/Daily Logs"
+  "chronoarchive.dailyLogsRoot": "~/Documents/Daily Logs",
+  "chronoarchive.dailyLogTemplatePath": "~/templates/daily.car"
 }
 ```
 
