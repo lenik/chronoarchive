@@ -70,8 +70,8 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+P` | Add new item after current |
-| `Ctrl+Shift+P` | Add new item before current |
+| `Alt+]` | Add new item after current |
+| `Alt+[` | Add new item before current |
 | `Ctrl+Alt+=` | Add new item at end of file |
 
 ### Item Deletion

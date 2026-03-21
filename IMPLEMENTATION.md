@@ -185,7 +185,7 @@ Registered in `src/extension.ts`:
    - **Outline** - View → Outline (Ctrl+Shift+O)
    - **Diagnostics** - Errors/warnings shown in Problems panel
    - **CodeLens** - Click "Run Prompt" or "Copy" above items
-   - **Commands** - Ctrl+Shift+P → "ChronoArchive: ..."
+   - **Commands** - Alt+[ → "ChronoArchive: ..."
 
 ## Build & Package
 

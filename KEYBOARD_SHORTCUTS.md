@@ -60,8 +60,8 @@ The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If 
 
 | Shortcut | Command | Description |
 |----------|---------|-------------|
-| `Ctrl+P` | `chronoarchive.addItemAfter` | Insert new item after current item |
-| `Ctrl+Shift+P` | `chronoarchive.addItemBefore` | Insert new item before current item |
+| `Alt+]` | `chronoarchive.addItemAfter` | Insert new item after current item |
+| `Alt+[` | `chronoarchive.addItemBefore` | Insert new item before current item |
 | `Ctrl+Alt+=` | `chronoarchive.addItemAtEnd` | Append new item at end of file |
 
 ## Item Deletion
@@ -98,8 +98,8 @@ The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If 
 3. Press `Alt+J` to move down
 
 ### Quick add new items
-- While working: `Ctrl+P` (add after current)
-- At beginning: `Ctrl+Shift+P` (add before current)
+- While working: `Alt+]` (add after current)
+- At beginning: `Alt+[` (add before current)
 - At end: `Ctrl+Alt+=` (append to file)
 
 ### Delete an item

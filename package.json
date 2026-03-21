@@ -342,12 +342,12 @@
       },
       {
         "command": "chronoarchive.addItemAfter",
-        "key": "ctrl+p",
+        "key": "alt+]",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {
         "command": "chronoarchive.addItemBefore",
-        "key": "ctrl+shift+p",
+        "key": "alt+[",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {

@@ -10,8 +10,8 @@
     Try moving this item up and down with Alt+J/K
 
 ✅ 10:15:00 Test item 4 - Insert new items
-    Press Ctrl+P to insert after this item
-    Press Ctrl+Shift+P to insert before this item
+    Press Alt+] to insert after this item
+    Press Alt+[ to insert before this item
 
 ✅ 10:20:00 Test item 5 - Blank lines
     The blank lines between items should follow the configuration
