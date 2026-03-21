@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publisher": "lenik",
   "repository": {
     "type": "git",
@@ -22,6 +22,12 @@
   "main": "./dist/extension.js",
   "icon": "icons/icon.png",
   "contributes": {
+    "configurationDefaults": {
+      "[chronoarchive]": {
+        "editor.trimAutoWhitespace": false,
+        "editor.autoIndent": "full"
+      }
+    },
     "languages": [
       {
         "id": "chronoarchive",
@@ -158,7 +164,12 @@
       },
       {
         "command": "chronoarchive.addItemBefore",
-        "title": "Add Item Before Current",
+        "title": "Add Item Before Current Item",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.addItemBeforeCurrentLine",
+        "title": "Add Item Before Current Line",
         "category": "ChronoArchive"
       },
       {
@@ -348,6 +359,11 @@
       {
         "command": "chronoarchive.addItemBefore",
         "key": "alt+[",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.addItemBeforeCurrentLine",
+        "key": "alt+shift+[",
         "when": "editorTextFocus && editorLangId == chronoarchive"
       },
       {

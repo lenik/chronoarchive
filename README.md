@@ -71,7 +71,8 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 | Shortcut | Action |
 |----------|--------|
 | `Alt+]` | Add new item after current |
-| `Alt+[` | Add new item before current |
+| `Alt+[` | Add new item before current **item** (before its head line) |
+| `Alt+Shift+[` | Add new item before **current line** (on head: same as `Alt+[`; on attribute/payload: **Blank lines between items** above the new item and below it before the next line) |
 | `Ctrl+Alt+=` | Add new item at end of file |
 
 ### Item Deletion

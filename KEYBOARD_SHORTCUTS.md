@@ -61,7 +61,8 @@ The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If 
 | Shortcut | Command | Description |
 |----------|---------|-------------|
 | `Alt+]` | `chronoarchive.addItemAfter` | Insert new item after current item |
-| `Alt+[` | `chronoarchive.addItemBefore` | Insert new item before current item |
+| `Alt+[` | `chronoarchive.addItemBefore` | Insert new item before the **current item** (always before its head line) |
+| `Alt+Shift+[` | `chronoarchive.addItemBeforeCurrentLine` | Insert new item before the **active line**: on the head line, same as before the item; on an attribute or payload line, inserts above that line with **Blank lines between items** both after the preceding text and before the following line. |
 | `Ctrl+Alt+=` | `chronoarchive.addItemAtEnd` | Append new item at end of file |
 
 ## Item Deletion
@@ -99,7 +100,8 @@ The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If 
 
 ### Quick add new items
 - While working: `Alt+]` (add after current)
-- At beginning: `Alt+[` (add before current)
+- Before whole item: `Alt+[` (before head line)
+- Before active line (e.g. split above a payload line): `Alt+Shift+[`
 - At end: `Ctrl+Alt+=` (append to file)
 
 ### Delete an item

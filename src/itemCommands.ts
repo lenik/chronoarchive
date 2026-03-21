@@ -82,10 +82,17 @@ export function registerItemCommands(): vscode.Disposable[] {
     })
   );
 
-  // Add item before current
+  // Add item before current item (head line)
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.addItemBefore', async () => {
       await addNewItem('before');
+    })
+  );
+
+  // Add item before current line (header → before head; attribute/payload → before that line)
+  disposables.push(
+    vscode.commands.registerCommand('chronoarchive.addItemBeforeCurrentLine', async () => {
+      await addNewItem('beforeLine');
     })
   );
 
@@ -659,9 +666,11 @@ async function optimizeBlankLines(): Promise<void> {
 }
 
 /**
- * Add a new item before, after, or at end
+ * Add a new item before, after, at end, or before the current line within an item.
+ * `before` inserts before the item head. `beforeLine` inserts at the active line (column 0):
+ * on the head line that matches “before item”; on attribute or payload lines, inserts above that line.
  */
-async function addNewItem(position: 'before' | 'after' | 'end'): Promise<void> {
+async function addNewItem(position: 'before' | 'after' | 'end' | 'beforeLine'): Promise<void> {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
     vscode.window.showWarningMessage('No active editor');
@@ -741,8 +750,14 @@ async function addNewItem(position: 'before' | 'after' | 'end'): Promise<void> {
       insertPosition = new vscode.Position(lineToInsert, 0);
       prefix = '';
       suffix = '\n'.repeat(blankLines);
-    } else { // before
-      // Insert at the beginning of the current item's first line
+    } else if (position === 'beforeLine') {
+      // Before active line: on head = same as before-item; else blank lines above new item + below (setting)
+      insertPosition = new vscode.Position(currentLine, 0);
+      prefix =
+        currentLine > item.startLine ? '\n'.repeat(blankLines) : '';
+      suffix = '\n'.repeat(blankLines);
+    } else {
+      // before — insert at the beginning of the current item's first line
       insertPosition = new vscode.Position(item.startLine, 0);
       prefix = ''; // New item goes first
       suffix = '\n'.repeat(blankLines); // Extra blank line after new item, then existing item
