@@ -2,6 +2,31 @@ import * as vscode from 'vscode';
 import { parse } from './parser';
 import { Item } from './types';
 
+/** Default payload hint for new items. Use plain text selection (not snippet tab-stops) so the first keystroke replaces it without snippet-mode selection glitches. */
+export const CONTENT_PLACEHOLDER = 'Enter your content here...';
+
+/**
+ * Insert text at `insertPosition`, then select `selected` within that insertion (normal editor selection).
+ */
+export async function insertTextAndSelectSubstring(
+  editor: vscode.TextEditor,
+  insertPosition: vscode.Position,
+  fullText: string,
+  selected: string
+): Promise<void> {
+  await editor.edit(editBuilder => {
+    editBuilder.insert(insertPosition, fullText);
+  });
+  const idx = fullText.indexOf(selected);
+  if (idx < 0) {
+    return;
+  }
+  const baseOffset = editor.document.offsetAt(insertPosition);
+  const start = editor.document.positionAt(baseOffset + idx);
+  const end = editor.document.positionAt(baseOffset + idx + selected.length);
+  editor.selection = new vscode.Selection(start, end);
+}
+
 /**
  * Track the last priority key press time and value for double-press detection
  */
@@ -766,8 +791,8 @@ async function addNewItem(position: 'before' | 'after' | 'end' | 'beforeLine'): 
 
   // Default: no modifiers, focus on payload editing
   // New item should NOT be indented
-  const snippet = new vscode.SnippetString(`${prefix}📝 ${time}\n    \${1:Enter your content here...}${suffix}\n`);
-  await editor.insertSnippet(snippet, insertPosition);
+  const inserted = `${prefix}📝 ${time}\n    ${CONTENT_PLACEHOLDER}${suffix}\n`;
+  await insertTextAndSelectSubstring(editor, insertPosition, inserted, CONTENT_PLACEHOLDER);
 }
 
 /**
@@ -793,18 +818,6 @@ async function deleteCurrentItem(): Promise<void> {
 
   if (!item) {
     vscode.window.showWarningMessage('Not inside a valid item');
-    return;
-  }
-
-  // Confirm deletion
-  const confirm = await vscode.window.showWarningMessage(
-    'Delete this item?',
-    { modal: true },
-    'Delete',
-    'Cancel'
-  );
-
-  if (confirm !== 'Delete') {
     return;
   }
 

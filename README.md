@@ -79,7 +79,7 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Shift+Delete` | Delete current item (with confirmation) |
+| `Alt+Delete` | Delete current item |
 
 ### Configuration
 

@@ -5,7 +5,9 @@ import { createFoldingRangeProvider } from './folding';
 import { createDiagnosticsProvider } from './diagnostics';
 import { createDocumentSymbolProvider } from './symbols';
 import { createCodeLensProvider, registerCodeLensCommands } from './codeLens';
-import { registerItemCommands } from './itemCommands';
+import { registerItemCommands, insertTextAndSelectSubstring, CONTENT_PLACEHOLDER } from './itemCommands';
+
+const INSERT_ITEM_PROMPT = '/prompt';
 import { openDailyLog } from './dailyLog';
 
 /**
@@ -157,10 +159,9 @@ function registerGeneralCommands(
       const position = editor.selection.active;
       const now = new Date();
       const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-      
-      const snippet = new vscode.SnippetString(`✅ ${time} \${1:/prompt}\n    \${2:Enter your content here...}\n\n`);
-      
-      await editor.insertSnippet(snippet, position);
+
+      const inserted = `✅ ${time} ${INSERT_ITEM_PROMPT}\n    ${CONTENT_PLACEHOLDER}\n\n`;
+      await insertTextAndSelectSubstring(editor, position, inserted, INSERT_ITEM_PROMPT);
     })
   );
   

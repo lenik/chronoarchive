@@ -83,7 +83,7 @@ Creation: {{CREATION}}
         Ctrl+/ 完成✅    Ctrl+Alt+=     追加
         Ctrl+' 关闭❌    Alt+[/]        向前/后插入
         Ctrl+" 注意⚠️    Alt+Shift+[    拆分插入
-        Ctrl+| 图钉📌    Ctrl+Shift+Del 删除
+        Ctrl+| 图钉📌    Alt+Del        删除
         Ctrl+? 等等⌛    Ctrl+J/K       向前/向后跳
         Ctrl+@ 饮品🍼    Alt+J/K        向前/向后移动
 

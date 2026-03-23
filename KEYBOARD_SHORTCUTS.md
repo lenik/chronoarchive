@@ -69,7 +69,7 @@ The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If 
 
 | Shortcut | Command | Description |
 |----------|---------|-------------|
-| `Ctrl+Shift+Delete` | `chronoarchive.deleteItem` | Delete current item (with confirmation) |
+| `Alt+Delete` | `chronoarchive.deleteItem` | Delete current item |
 
 ## Usage Examples
 
