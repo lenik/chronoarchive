@@ -50,6 +50,8 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl+Alt+D` | Create and open today's daily log (`.car`) at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car` |
+| `Alt+PageUp` / `Alt+PageDown` | Jump to the **nearest existing** daily log in that direction (skips empty dates; never creates files). If nothing is found within a long scan range, nothing happens. Base date: active daily log under **Daily Logs Root**, else today. |
+| `Ctrl+Alt+PageUp` / `Ctrl+Alt+PageDown` | Open the **previous / next calendar day** daily log; **creates** the file from the template if missing (same base-date rule as above). |
 
 ### Single Toggle Flags
 

@@ -44,6 +44,36 @@ export function getDailyLogPathForDate(root: string, date: Date): string {
   return path.join(root, String(year), `${year}-${month}`, filename);
 }
 
+/**
+ * If `filePath` is a daily log file under the configured root (`.../YEAR/YEAR-MM/YYYY-MM-DD.car`), return that calendar date; otherwise null.
+ */
+export function tryParseDailyLogDateFromFilePath(filePath: string): Date | null {
+  const root = path.resolve(getDailyLogsRoot());
+  const resolved = path.resolve(filePath);
+  const rootNorm = root.endsWith(path.sep) ? root.slice(0, -1) : root;
+  const resNorm = resolved.endsWith(path.sep) ? resolved.slice(0, -1) : resolved;
+  const isWin = process.platform === 'win32';
+  const under = isWin
+    ? resNorm.toLowerCase().startsWith(rootNorm.toLowerCase() + path.sep)
+    : resNorm.startsWith(rootNorm + path.sep);
+  if (!under) {
+    return null;
+  }
+  const base = path.basename(filePath, '.car');
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(base);
+  if (!match) {
+    return null;
+  }
+  const y = parseInt(match[1], 10);
+  const m = parseInt(match[2], 10) - 1;
+  const d = parseInt(match[3], 10);
+  const date = new Date(y, m, d);
+  if (date.getFullYear() !== y || date.getMonth() !== m || date.getDate() !== d) {
+    return null;
+  }
+  return date;
+}
+
 function formatCreation(date: Date): string {
   const wd = date.toLocaleDateString('en-US', { weekday: 'short' });
   const mon = date.toLocaleDateString('en-US', { month: 'short' });
@@ -86,6 +116,7 @@ Creation: {{CREATION}}
         Ctrl+| 图钉📌    Alt+Del        删除
         Ctrl+? 等等⌛    Ctrl+J/K       向前/向后跳
         Ctrl+@ 饮品🍼    Alt+J/K        向前/向后移动
+        Ctrl+Alt+D 今天  Alt+PgUp/PgDn  前/后一天
 
 ☕️ 13:18:00
     据说为作者👧买杯咖啡☕️很快就能获得📈巨大的成功💎呢～
@@ -115,18 +146,26 @@ export function getDailyLogContent(date: Date): string {
   return template.replace(/\{\{CREATION\}\}/g, creation).replace(/\{\{TIME\}\}/g, time);
 }
 
-export async function openDailyLog(): Promise<void> {
+/** Max calendar days to scan when jumping to an existing adjacent daily log (safety cap). */
+const MAX_ADJACENT_SCAN_DAYS = 365 * 50;
+
+export async function openDailyLogForDate(
+  date: Date,
+  options?: { createIfMissing?: boolean }
+): Promise<void> {
+  const createIfMissing = options?.createIfMissing !== false;
   const root = getDailyLogsRoot();
-  const date = new Date();
   const filePath = getDailyLogPathForDate(root, date);
 
   try {
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
     if (!fs.existsSync(filePath)) {
+      if (!createIfMissing) {
+        return;
+      }
+      const dir = path.dirname(filePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
       const content = getDailyLogContent(date);
       fs.writeFileSync(filePath, content, 'utf8');
     }
@@ -138,4 +177,54 @@ export async function openDailyLog(): Promise<void> {
     const message = err instanceof Error ? err.message : String(err);
     vscode.window.showErrorMessage(`ChronoArchive: Failed to open daily log: ${message}`);
   }
+}
+
+export async function openDailyLog(): Promise<void> {
+  await openDailyLogForDate(new Date());
+}
+
+/**
+ * Open the nearest existing daily log in the given direction (previous / next calendar days), relative to the active editor's daily log date or today.
+ * Skips dates with no file. If none is found within {@link MAX_ADJACENT_SCAN_DAYS} steps, does nothing (no UI).
+ */
+export async function openAdjacentDailyLog(offsetDays: number): Promise<void> {
+  let base = new Date();
+  const editor = vscode.window.activeTextEditor;
+  if (editor?.document.uri.scheme === 'file') {
+    const parsed = tryParseDailyLogDateFromFilePath(editor.document.uri.fsPath);
+    if (parsed) {
+      base = parsed;
+    }
+  }
+  const root = getDailyLogsRoot();
+  const step = offsetDays > 0 ? 1 : -1;
+  const candidate = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  candidate.setDate(candidate.getDate() + step);
+
+  for (let i = 0; i < MAX_ADJACENT_SCAN_DAYS; i++) {
+    const filePath = getDailyLogPathForDate(root, candidate);
+    if (fs.existsSync(filePath)) {
+      await openDailyLogForDate(candidate, { createIfMissing: false });
+      return;
+    }
+    candidate.setDate(candidate.getDate() + step);
+  }
+}
+
+/**
+ * Open the daily log for exactly one calendar day before or after the base date (active daily log file or today), creating the file from the template if missing.
+ */
+export async function openAdjacentDailyLogCreate(offsetDays: number): Promise<void> {
+  let base = new Date();
+  const editor = vscode.window.activeTextEditor;
+  if (editor?.document.uri.scheme === 'file') {
+    const parsed = tryParseDailyLogDateFromFilePath(editor.document.uri.fsPath);
+    if (parsed) {
+      base = parsed;
+    }
+  }
+  const step = offsetDays > 0 ? 1 : -1;
+  const target = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  target.setDate(target.getDate() + step);
+  await openDailyLogForDate(target, { createIfMissing: true });
 }

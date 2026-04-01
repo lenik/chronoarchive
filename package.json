@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "publisher": "lenik",
   "repository": {
     "type": "git",
@@ -17,7 +17,11 @@
   ],
   "activationEvents": [
     "onLanguage:chronoarchive",
-    "onCommand:chronoarchive.openDailyLog"
+    "onCommand:chronoarchive.openDailyLog",
+    "onCommand:chronoarchive.openDailyLogPreviousDay",
+    "onCommand:chronoarchive.openDailyLogNextDay",
+    "onCommand:chronoarchive.openDailyLogPreviousDayCreate",
+    "onCommand:chronoarchive.openDailyLogNextDayCreate"
   ],
   "main": "./dist/extension.js",
   "icon": "icons/icon.png",
@@ -236,6 +240,16 @@
         "command": "chronoarchive.openDailyLog",
         "title": "Open Daily Log",
         "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLogPreviousDay",
+        "title": "Open Previous Day Daily Log",
+        "category": "ChronoArchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLogNextDay",
+        "title": "Open Next Day Daily Log",
+        "category": "ChronoArchive"
       }
     ],
     "configuration": {
@@ -395,6 +409,26 @@
         "command": "chronoarchive.openDailyLog",
         "key": "alt+meta+d",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "chronoarchive.openDailyLogPreviousDay",
+        "key": "alt+pageup",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLogNextDay",
+        "key": "alt+pagedown",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLogPreviousDayCreate",
+        "key": "ctrl+alt+pageup",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
+      },
+      {
+        "command": "chronoarchive.openDailyLogNextDayCreate",
+        "key": "ctrl+alt+pagedown",
+        "when": "editorTextFocus && editorLangId == chronoarchive"
       }
     ]
   },

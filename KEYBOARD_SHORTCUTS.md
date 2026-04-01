@@ -53,8 +53,14 @@ These shortcuts cycle through multiple flag variants in order, toggling off afte
 | Shortcut | Command | Description |
 |----------|---------|-------------|
 | `Ctrl+Alt+D` | `chronoarchive.openDailyLog` | Create and open today's daily log file |
+| `Alt+PageUp` | `chronoarchive.openDailyLogPreviousDay` | Open the **nearest existing** older daily log (skip days with no file; does not create). Silent no-op if none found in range. Base date: active daily log under **Daily Logs Root**, else today. |
+| `Alt+PageDown` | `chronoarchive.openDailyLogNextDay` | Open the **nearest existing** newer daily log (same rules as Page Up). |
+| `Ctrl+Alt+PageUp` | `chronoarchive.openDailyLogPreviousDayCreate` | Open the **previous calendar day** daily log; create from template if missing. Same base-date rule as Alt+PageUp. |
+| `Ctrl+Alt+PageDown` | `chronoarchive.openDailyLogNextDayCreate` | Open the **next calendar day** daily log; create from template if missing. |
 
 The file is created at `<dailyLogsRoot>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car`. If it already exists, it is opened. In Settings → ChronoArchive: set **Daily Logs Root** (empty = platform default) and **Daily Log Template Path** (empty = built-in template; or path to a file with `{{CREATION}}` and `{{TIME}}` placeholders).
+
+**Note:** These Page Up / Page Down shortcuts are bound when editing chronoarchive (`.car`) files so they do not override the same keys in other editors.
 
 ## Item Creation
 

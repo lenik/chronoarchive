@@ -8,7 +8,7 @@ import { createCodeLensProvider, registerCodeLensCommands } from './codeLens';
 import { registerItemCommands, insertTextAndSelectSubstring, CONTENT_PLACEHOLDER } from './itemCommands';
 
 const INSERT_ITEM_PROMPT = '/prompt';
-import { openDailyLog } from './dailyLog';
+import { openDailyLog, openAdjacentDailyLog, openAdjacentDailyLogCreate } from './dailyLog';
 
 /**
  * Called when the extension is activated
@@ -32,9 +32,13 @@ export function activate(context: vscode.ExtensionContext): void {
   const itemCommandDisposables = registerItemCommands();
   context.subscriptions.push(...itemCommandDisposables);
   
-  // Register daily log command (works without .car open)
+  // Daily log commands (work without a chronoarchive file focused)
   context.subscriptions.push(
-    vscode.commands.registerCommand('chronoarchive.openDailyLog', openDailyLog)
+    vscode.commands.registerCommand('chronoarchive.openDailyLog', openDailyLog),
+    vscode.commands.registerCommand('chronoarchive.openDailyLogPreviousDay', () => openAdjacentDailyLog(-1)),
+    vscode.commands.registerCommand('chronoarchive.openDailyLogNextDay', () => openAdjacentDailyLog(1)),
+    vscode.commands.registerCommand('chronoarchive.openDailyLogPreviousDayCreate', () => openAdjacentDailyLogCreate(-1)),
+    vscode.commands.registerCommand('chronoarchive.openDailyLogNextDayCreate', () => openAdjacentDailyLogCreate(1))
   );
   
   // Register additional commands
