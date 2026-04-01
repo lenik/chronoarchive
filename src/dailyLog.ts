@@ -149,6 +149,47 @@ export function getDailyLogContent(date: Date): string {
 /** Max calendar days to scan when jumping to an existing adjacent daily log (safety cap). */
 const MAX_ADJACENT_SCAN_DAYS = 365 * 50;
 
+function pathsEqualFs(a: string, b: string): boolean {
+  const na = path.normalize(a);
+  const nb = path.normalize(b);
+  if (process.platform === 'win32') {
+    return na.toLowerCase() === nb.toLowerCase();
+  }
+  return na === nb;
+}
+
+/**
+ * Show a daily log URI. If the active editor is an unmodified daily log under the configured root, close it first so the target opens in the same slot instead of a new tab.
+ */
+async function showDailyLogInEditor(uri: vscode.Uri): Promise<void> {
+  const active = vscode.window.activeTextEditor;
+  if (
+    active?.document.uri.scheme === 'file' &&
+    pathsEqualFs(active.document.uri.fsPath, uri.fsPath)
+  ) {
+    await vscode.window.showTextDocument(active.document, { preview: false });
+    return;
+  }
+
+  const reuseSlot =
+    active &&
+    !active.document.isDirty &&
+    active.document.uri.scheme === 'file' &&
+    tryParseDailyLogDateFromFilePath(active.document.uri.fsPath) !== null;
+
+  let viewColumn: vscode.ViewColumn | undefined;
+  if (reuseSlot) {
+    viewColumn = active.viewColumn;
+    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+  }
+
+  const doc = await vscode.workspace.openTextDocument(uri);
+  await vscode.window.showTextDocument(doc, {
+    preview: false,
+    viewColumn: viewColumn ?? vscode.ViewColumn.Active,
+  });
+}
+
 export async function openDailyLogForDate(
   date: Date,
   options?: { createIfMissing?: boolean }
@@ -171,8 +212,7 @@ export async function openDailyLogForDate(
     }
 
     const uri = vscode.Uri.file(filePath);
-    const doc = await vscode.workspace.openTextDocument(uri);
-    await vscode.window.showTextDocument(doc, { preview: false });
+    await showDailyLogInEditor(uri);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     vscode.window.showErrorMessage(`ChronoArchive: Failed to open daily log: ${message}`);

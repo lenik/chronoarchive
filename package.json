@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "publisher": "lenik",
   "repository": {
     "type": "git",
