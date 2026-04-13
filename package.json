@@ -1,8 +1,8 @@
 {
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
-  "description": "Language support for chronoarchive (.car) files - structured task tracking with syntax highlighting, folding, and diagnostics",
-  "version": "1.1.6",
+  "description": "%extension.description%",
+  "version": "1.1.7",
   "publisher": "lenik",
   "repository": {
     "type": "git",
@@ -59,23 +59,23 @@
     "semanticTokenTypes": [
       {
         "id": "flag",
-        "description": "Flags in chronoarchive head lines (e.g., 📝, ✅, TODO)"
+        "description": "%semantic.flag%"
       },
       {
         "id": "datetime",
-        "description": "Date and time tokens in head lines"
+        "description": "%semantic.datetime%"
       },
       {
         "id": "modifier",
-        "description": "Modifiers in head lines (e.g., /prompt, /php, /lang=python)"
+        "description": "%semantic.modifier%"
       },
       {
         "id": "attributeName",
-        "description": "Attribute names in superheaders and item attributes"
+        "description": "%semantic.attributeName%"
       },
       {
         "id": "attributeValue",
-        "description": "Attribute values in superheaders and item attributes"
+        "description": "%semantic.attributeValue%"
       }
     ],
     "semanticTokenScopes": [
@@ -103,174 +103,174 @@
     "commands": [
       {
         "command": "chronoarchive.toggleDone",
-        "title": "Toggle Done Flag",
-        "category": "ChronoArchive"
+        "title": "%command.toggleDone%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleIgnored",
-        "title": "Toggle Ignored Flag",
-        "category": "ChronoArchive"
+        "title": "%command.toggleIgnored%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleExclamation",
-        "title": "Toggle Exclamation Flag",
-        "category": "ChronoArchive"
+        "title": "%command.toggleExclamation%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.setPriority1",
-        "title": "Set Priority 1 Star",
-        "category": "ChronoArchive"
+        "title": "%command.setPriority1%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.setPriority2",
-        "title": "Set Priority 2 Stars",
-        "category": "ChronoArchive"
+        "title": "%command.setPriority2%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.setPriority3",
-        "title": "Set Priority 3 Stars",
-        "category": "ChronoArchive"
+        "title": "%command.setPriority3%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.setPriority4",
-        "title": "Set Priority 4 Stars",
-        "category": "ChronoArchive"
+        "title": "%command.setPriority4%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.setPriority5",
-        "title": "Set Priority 5 Stars",
-        "category": "ChronoArchive"
+        "title": "%command.setPriority5%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.moveItemUp",
-        "title": "Move Item Up",
-        "category": "ChronoArchive"
+        "title": "%command.moveItemUp%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.moveItemDown",
-        "title": "Move Item Down",
-        "category": "ChronoArchive"
+        "title": "%command.moveItemDown%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.moveLineUp",
-        "title": "Move Line Up",
-        "category": "ChronoArchive"
+        "title": "%command.moveLineUp%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.moveLineDown",
-        "title": "Move Line Down",
-        "category": "ChronoArchive"
+        "title": "%command.moveLineDown%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.addItemAfter",
-        "title": "Add Item After Current",
-        "category": "ChronoArchive"
+        "title": "%command.addItemAfter%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.addItemBefore",
-        "title": "Add Item Before Current Item",
-        "category": "ChronoArchive"
+        "title": "%command.addItemBefore%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.addItemBeforeCurrentLine",
-        "title": "Add Item Before Current Line",
-        "category": "ChronoArchive"
+        "title": "%command.addItemBeforeCurrentLine%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.addItemAtEnd",
-        "title": "Add Item at End of File",
-        "category": "ChronoArchive"
+        "title": "%command.addItemAtEnd%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.deleteItem",
-        "title": "Delete Current Item",
-        "category": "ChronoArchive"
+        "title": "%command.deleteItem%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.jumpToNextItem",
-        "title": "Jump to Next Item",
-        "category": "ChronoArchive"
+        "title": "%command.jumpToNextItem%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.jumpToPreviousItem",
-        "title": "Jump to Previous Item",
-        "category": "ChronoArchive"
+        "title": "%command.jumpToPreviousItem%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleDoneCycle",
-        "title": "Cycle Done Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleDoneCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleClosedCycle",
-        "title": "Cycle Closed Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleClosedCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.togglePendingCycle",
-        "title": "Cycle Pending Flags",
-        "category": "ChronoArchive"
+        "title": "%command.togglePendingCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleImportanceCycle",
-        "title": "Cycle Importance Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleImportanceCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleAttentionCycle",
-        "title": "Cycle Attention Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleAttentionCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleDrinkCycle",
-        "title": "Cycle Drink Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleDrinkCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleGoodEmotionCycle",
-        "title": "Cycle Good Emotion Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleGoodEmotionCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.toggleBadEmotionCycle",
-        "title": "Cycle Bad Emotion Flags",
-        "category": "ChronoArchive"
+        "title": "%command.toggleBadEmotionCycle%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.openDailyLog",
-        "title": "Open Daily Log",
-        "category": "ChronoArchive"
+        "title": "%command.openDailyLog%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.openDailyLogPreviousDay",
-        "title": "Open Previous Day Daily Log",
-        "category": "ChronoArchive"
+        "title": "%command.openDailyLogPreviousDay%",
+        "category": "%category.chronoarchive%"
       },
       {
         "command": "chronoarchive.openDailyLogNextDay",
-        "title": "Open Next Day Daily Log",
-        "category": "ChronoArchive"
+        "title": "%command.openDailyLogNextDay%",
+        "category": "%category.chronoarchive%"
       }
     ],
     "configuration": {
-      "title": "ChronoArchive",
+      "title": "%config.title%",
       "properties": {
         "chronoarchive.blankLinesBetweenItems": {
           "type": "number",
           "default": 0,
           "minimum": 0,
           "maximum": 3,
-          "description": "Number of blank lines to preserve between items. Extra blank lines will be removed."
+          "description": "%config.blankLinesBetweenItems%"
         },
         "chronoarchive.dailyLogsRoot": {
           "type": "string",
           "default": "",
-          "description": "Root folder for daily log files. File path: <root>/YEAR/YEAR-MONTH/YEAR-MONTH-DAY.car. Empty = platform default: Linux: XDG_DOCUMENTS_DIR or ~/Documents, then 'Daily Logs'; Windows: %USERPROFILE%\\Documents\\Daily Logs"
+          "description": "%config.dailyLogsRoot%"
         },
         "chronoarchive.dailyLogTemplatePath": {
           "type": "string",
           "default": "",
-          "description": "Path to a custom template file for new daily logs. Use placeholders {{CREATION}} and {{TIME}}. Leave blank to use the built-in default template."
+          "description": "%config.dailyLogTemplatePath%"
         }
       }
     },
@@ -402,13 +402,11 @@
       },
       {
         "command": "chronoarchive.openDailyLog",
-        "key": "ctrl+alt+d",
-        "when": "editorTextFocus"
+        "key": "ctrl+alt+d"
       },
       {
         "command": "chronoarchive.openDailyLog",
-        "key": "alt+meta+d",
-        "when": "editorTextFocus"
+        "key": "alt+meta+d"
       },
       {
         "command": "chronoarchive.openDailyLogPreviousDay",

@@ -1,6 +1,10 @@
 # ChronoArchive VS Code Extension
 
+**Languages:** [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Tiếng Việt](README.vi.md) · [ไทย](README.th.md)
+
 Language support for chronoarchive (`.car`) files - a structured, line-oriented plain text format for task tracking, timestamped logging, and prompt containers.
+
+The extension UI (commands, settings, semantic token labels) is localized via `package.nls.json` and `package.nls.<locale>.json`. VS Code picks strings from the active display language (`Configure Display Language`). Locale files in this repo: `en` (default, `package.nls.json`), `zh-cn`, `zh-tw`, `ja`, `ko`, `vi`, `th`.
 
 ## Features
 
@@ -87,7 +91,7 @@ Press repeatedly to cycle through flag variants. After the last flag, the next p
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `chronoarchive.blankLinesBetweenItems` | `1` | Number of blank lines between items (0-3) |
+| `chronoarchive.blankLinesBetweenItems` | `0` | Number of blank lines between items (0-3) |
 
 ## Quick Start
 
