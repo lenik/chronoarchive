@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
+import { buildCopiedDailyLogContent } from './dailyLogCopy';
 
 const DAILY_LOGS_FOLDER = 'Daily Logs';
 
@@ -146,6 +147,30 @@ export function getDailyLogContent(date: Date): string {
   return template.replace(/\{\{CREATION\}\}/g, creation).replace(/\{\{TIME\}\}/g, time);
 }
 
+function getPreviousCalendarDate(date: Date): Date {
+  const prev = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  prev.setDate(prev.getDate() - 1);
+  return prev;
+}
+
+/**
+ * Content for a new daily log: copy from the previous day's file when it exists, otherwise use the template.
+ */
+function getContentForNewDailyLog(targetDate: Date, root: string): string {
+  const now = new Date();
+  const prevDate = getPreviousCalendarDate(targetDate);
+  const prevPath = getDailyLogPathForDate(root, prevDate);
+  if (fs.existsSync(prevPath)) {
+    try {
+      const source = fs.readFileSync(prevPath, 'utf8');
+      return buildCopiedDailyLogContent(source, prevDate, now);
+    } catch {
+      // fall through to template
+    }
+  }
+  return getDailyLogContent(now);
+}
+
 /** Max calendar days to scan when jumping to an existing adjacent daily log (safety cap). */
 const MAX_ADJACENT_SCAN_DAYS = 365 * 50;
 
@@ -207,7 +232,7 @@ export async function openDailyLogForDate(
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      const content = getDailyLogContent(date);
+      const content = getContentForNewDailyLog(date, root);
       fs.writeFileSync(filePath, content, 'utf8');
     }
 
