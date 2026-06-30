@@ -421,7 +421,7 @@ async function setPriority(stars: number): Promise<void> {
 }
 
 /**
- * Move current line up or down by swapping with adjacent line.
+ * Move the current line or selected line range up or down by swapping with the adjacent line(s).
  * Preserves exact line text (no re-indentation).
  */
 async function moveLine(direction: 'up' | 'down'): Promise<void> {
@@ -429,31 +429,47 @@ async function moveLine(direction: 'up' | 'down'): Promise<void> {
   if (!editor) return;
   if (editor.document.languageId !== 'chronoarchive') return;
 
-  const lineIndex = editor.selection.active.line;
   const doc = editor.document;
-  const lineCount = doc.lineCount;
   const eol = doc.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';
+  const sel = editor.selection;
+  const startLine = Math.min(sel.start.line, sel.end.line);
+  const endLine = Math.max(sel.start.line, sel.end.line);
+  const lineCount = doc.lineCount;
+
+  const lineTexts = (from: number, to: number): string[] => {
+    const texts: string[] = [];
+    for (let i = from; i <= to; i++) {
+      texts.push(doc.lineAt(i).text);
+    }
+    return texts;
+  };
 
   if (direction === 'up') {
-    if (lineIndex === 0) return;
-    const prevLine = doc.lineAt(lineIndex - 1);
-    const currLine = doc.lineAt(lineIndex);
-    const range = new vscode.Range(lineIndex - 1, 0, lineIndex, currLine.text.length);
-    const newText = currLine.text + eol + prevLine.text;
-    await editor.edit(editBuilder => editBuilder.replace(range, newText));
-    const newCursorLine = lineIndex - 1;
-    const character = Math.min(editor.selection.active.character, doc.lineAt(newCursorLine).text.length);
-    editor.selection = new vscode.Selection(newCursorLine, character, newCursorLine, character);
+    if (startLine === 0) return;
+    const above = lineTexts(startLine - 1, startLine - 1);
+    const block = lineTexts(startLine, endLine);
+    const range = new vscode.Range(startLine - 1, 0, endLine, doc.lineAt(endLine).text.length);
+    const newText = [...block, ...above].join(eol);
+    await editor.edit((editBuilder) => editBuilder.replace(range, newText));
+    editor.selection = new vscode.Selection(
+      sel.anchor.line - 1,
+      sel.anchor.character,
+      sel.active.line - 1,
+      sel.active.character
+    );
   } else {
-    if (lineIndex >= lineCount - 1) return;
-    const currLine = doc.lineAt(lineIndex);
-    const nextLine = doc.lineAt(lineIndex + 1);
-    const range = new vscode.Range(lineIndex, 0, lineIndex + 1, nextLine.text.length);
-    const newText = nextLine.text + eol + currLine.text;
-    await editor.edit(editBuilder => editBuilder.replace(range, newText));
-    const newCursorLine = lineIndex + 1;
-    const character = Math.min(editor.selection.active.character, doc.lineAt(newCursorLine).text.length);
-    editor.selection = new vscode.Selection(newCursorLine, character, newCursorLine, character);
+    if (endLine >= lineCount - 1) return;
+    const block = lineTexts(startLine, endLine);
+    const below = lineTexts(endLine + 1, endLine + 1);
+    const range = new vscode.Range(startLine, 0, endLine + 1, doc.lineAt(endLine + 1).text.length);
+    const newText = [...below, ...block].join(eol);
+    await editor.edit((editBuilder) => editBuilder.replace(range, newText));
+    editor.selection = new vscode.Selection(
+      sel.anchor.line + 1,
+      sel.anchor.character,
+      sel.active.line + 1,
+      sel.active.character
+    );
   }
 }
 
