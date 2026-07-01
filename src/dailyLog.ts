@@ -103,7 +103,7 @@ Creation: {{CREATION}}
     据说为作者👧买杯咖啡☕️很快就能获得📈巨大的成功💎呢～
 `;
 
-function getTemplateSource(): { content: string; path: string | null } {
+function getConfiguredTemplateSource(): { content: string; path: string | null } {
   const config = vscode.workspace.getConfiguration('chronoarchive');
   const templatePath = config.get<string>('dailyLogTemplatePath', '');
   if (templatePath && templatePath.trim() !== '') {
@@ -120,9 +120,40 @@ function getTemplateSource(): { content: string; path: string | null } {
   return { content: TEMPLATE, path: null };
 }
 
+/**
+ * Resolve source for a new daily log: configured template path, else the nearest
+ * existing earlier log under dailyLogsRoot (same scan as adjacent-day navigation).
+ */
+function getNewLogSource(
+  targetDate: Date,
+  root: string
+): { content: string; path: string | null } {
+  const configured = getConfiguredTemplateSource();
+  if (configured.path !== null) {
+    return configured;
+  }
+
+  const candidate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+  candidate.setDate(candidate.getDate() - 1);
+  for (let i = 0; i < MAX_ADJACENT_SCAN_DAYS; i++) {
+    const filePath = getDailyLogPathForDate(root, candidate);
+    if (fs.existsSync(filePath)) {
+      try {
+        return { content: fs.readFileSync(filePath, 'utf8'), path: filePath };
+      } catch {
+        break;
+      }
+    }
+    candidate.setDate(candidate.getDate() - 1);
+  }
+
+  return { content: TEMPLATE, path: null };
+}
+
 export function getDailyLogContent(date: Date): string {
-  const { content, path: templatePath } = getTemplateSource();
-  return getDailyLogContentFromTemplate(content, templatePath, date);
+  const root = getDailyLogsRoot();
+  const { content, path: sourcePath } = getNewLogSource(date, root);
+  return getDailyLogContentFromTemplate(content, sourcePath, date);
 }
 
 function pathsEqualFs(a: string, b: string): boolean {

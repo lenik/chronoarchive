@@ -118,7 +118,7 @@ export function applyDailyLogTemplate(template: string, date: Date): string {
 }
 
 /**
- * Build today's log from a source document (typically dailyLogTemplatePath):
+ * Build today's log from the previous session document:
  * update Creation, prepend today's starter item, and roll prior items into one backlog block.
  */
 export function buildCopiedDailyLogContent(
@@ -142,19 +142,19 @@ export function buildCopiedDailyLogContent(
 }
 
 /**
- * Create content for a new daily log file.
- * Built-in template: substitute placeholders only.
- * Custom template path (copy-from-last-session): refresh Creation and archive items into backlog.
+ * Turn template / prior-session source text into new daily log file content.
+ * `sourcePath` set (custom template or prior `.car`): Creation refresh + backlog.
+ * `sourcePath` null (built-in starter): placeholders only.
  */
 export function getDailyLogContentFromTemplate(
   templateContent: string,
-  templatePath: string | null,
+  sourcePath: string | null,
   targetDate: Date,
   now: Date = new Date()
 ): string {
-  if (templatePath !== null) {
+  if (sourcePath !== null) {
     const sourceDate =
-      parseDateFromDailyLogBasename(templatePath) ?? getPreviousCalendarDate(targetDate);
+      parseDateFromDailyLogBasename(sourcePath) ?? getPreviousCalendarDate(targetDate);
     return buildCopiedDailyLogContent(templateContent, sourceDate, now);
   }
   return applyDailyLogTemplate(templateContent, now);
