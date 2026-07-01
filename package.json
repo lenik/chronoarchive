@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "%extension.description%",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "publisher": "lenik",
   "repository": {
     "type": "git",
@@ -29,7 +29,21 @@
     "configurationDefaults": {
       "[chronoarchive]": {
         "editor.trimAutoWhitespace": false,
-        "editor.autoIndent": "full"
+        "editor.autoIndent": "full",
+        "editor.semanticHighlighting.enabled": true
+      },
+      "editor.semanticTokenColorCustomizations": {
+        "rules": {
+          "date.italic": {
+            "fontStyle": "italic"
+          },
+          "modifier.bold": {
+            "fontStyle": "bold"
+          },
+          "lineBeforeHead.underline": {
+            "fontStyle": "underline"
+          }
+        }
       }
     },
     "languages": [
@@ -62,8 +76,12 @@
         "description": "%semantic.flag%"
       },
       {
-        "id": "datetime",
-        "description": "%semantic.datetime%"
+        "id": "date",
+        "description": "%semantic.date%"
+      },
+      {
+        "id": "time",
+        "description": "%semantic.time%"
       },
       {
         "id": "modifier",
@@ -76,6 +94,24 @@
       {
         "id": "attributeValue",
         "description": "%semantic.attributeValue%"
+      },
+      {
+        "id": "lineBeforeHead",
+        "description": "%semantic.lineBeforeHead%"
+      }
+    ],
+    "semanticTokenModifiers": [
+      {
+        "id": "italic",
+        "description": "%semantic.modifier.italic%"
+      },
+      {
+        "id": "bold",
+        "description": "%semantic.modifier.bold%"
+      },
+      {
+        "id": "underline",
+        "description": "%semantic.modifier.underline%"
       }
     ],
     "semanticTokenScopes": [
@@ -85,11 +121,26 @@
           "flag": [
             "keyword.control.chronoarchive"
           ],
-          "datetime": [
-            "constant.numeric.chronoarchive"
+          "date": [
+            "constant.numeric.date.chronoarchive"
+          ],
+          "date.italic": [
+            "constant.numeric.date.chronoarchive"
+          ],
+          "time": [
+            "constant.numeric.time.chronoarchive"
           ],
           "modifier": [
             "entity.other.attribute-name.chronoarchive"
+          ],
+          "modifier.bold": [
+            "entity.other.attribute-name.chronoarchive"
+          ],
+          "lineBeforeHead": [
+            "markup.underline.chronoarchive"
+          ],
+          "lineBeforeHead.underline": [
+            "markup.underline.chronoarchive"
           ],
           "attributeName": [
             "variable.other.chronoarchive"

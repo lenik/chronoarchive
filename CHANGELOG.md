@@ -4,6 +4,18 @@ All notable changes to the **ChronoArchive** VS Code extension are documented he
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and version headings include a release timestamp (`YYYY-MM-DD HH:MM:SS ±TZ`).
 
+## [1.1.10] - 2026-07-01 17:00:11 +0800
+
+### Added
+
+- Semantic highlighting: **date** italic, **modifier** bold, **line before head** underlined (including blank separator lines above item heads). TextMate grammar fallback matches the same styles. Default `editor.semanticTokenColorCustomizations` rules ship with the extension.
+
+### Fixed
+
+- Daily log creation with no **Daily Log Template Path**: copy from the most recent existing `.car` under `dailyLogsRoot` (scan backward from the day before the target date), then refresh `Creation`, prepend `Today is a new start! ^_^`, and roll prior items into `= backlog =`. Template path still takes priority when configured.
+- Head line flag order follows `[flags] [date] time [modifier*]` — toggling/cycling flags on date-first heads (e.g. backlog `2026-06-30 15:12:15 .. 15:12:47`) no longer inserts emoji before the date.
+- Centralized cycle-flag emoji lists in `src/flags.ts` (shared by toggle/cycle/priority commands).
+
 ## [1.1.9] - 2026-07-01 16:19:12 +0800
 
 ### Fixed

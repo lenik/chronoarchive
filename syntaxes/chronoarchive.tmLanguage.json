@@ -74,7 +74,10 @@
       "match": "\\b(\\d{4}[-/]\\d{2}[-/]\\d{2})\\b",
       "captures": {
         "1": {
-          "name": "constant.numeric.date.chronoarchive"
+          "name": "constant.numeric.date.chronoarchive",
+          "settings": {
+            "fontStyle": "italic"
+          }
         }
       }
     },
@@ -92,7 +95,10 @@
       "match": "(\\/\\S+)",
       "captures": {
         "1": {
-          "name": "entity.other.attribute-name.chronoarchive"
+          "name": "entity.other.attribute-name.chronoarchive",
+          "settings": {
+            "fontStyle": "bold"
+          }
         }
       }
     },
