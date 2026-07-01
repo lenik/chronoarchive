@@ -316,6 +316,46 @@ function parseHeadLine(
   return { flags, date, time, modifiers };
 }
 
+/** Core head tokens in spec order: flags, date, time, modifiers. */
+function itemHeadCoreTokens(item: Item): string[] {
+  const tokens: string[] = [...item.flags];
+  if (item.date) {
+    tokens.push(item.date);
+  }
+  if (item.time) {
+    tokens.push(item.time);
+  }
+  tokens.push(...item.modifiers);
+  return tokens;
+}
+
+/** Trailing text after parsed core head tokens (e.g. backlog `.. 15:12:47`). */
+export function extractHeadTail(headText: string, item: Item): string {
+  const tokens = headText.trim().split(/\s+/);
+  const core = itemHeadCoreTokens(item);
+  let i = 0;
+  for (const token of core) {
+    if (i >= tokens.length || tokens[i] !== token) {
+      return '';
+    }
+    i++;
+  }
+  return i < tokens.length ? ' ' + tokens.slice(i).join(' ') : '';
+}
+
+/** Format head as `[flags] [date] time [modifiers]` plus any tail from the original line. */
+export function formatItemHead(item: Item, headText: string, flags: string[]): string {
+  const parts: string[] = [...flags];
+  if (item.date) {
+    parts.push(item.date);
+  }
+  if (item.time) {
+    parts.push(item.time);
+  }
+  parts.push(...item.modifiers);
+  return parts.join(' ') + extractHeadTail(headText, item);
+}
+
 /**
  * Parse an attribute line (Name: Value)
  */

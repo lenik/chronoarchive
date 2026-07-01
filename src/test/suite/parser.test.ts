@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { parse, getLanguageFromModifiers, hasModifier } from '../../parser';
+import { parse, getLanguageFromModifiers, hasModifier, formatItemHead } from '../../parser';
 
 suite('Parser Tests', () => {
   suite('Superheader Parsing', () => {
@@ -157,6 +157,27 @@ First item with payload
       assert.strictEqual(result.ast.items[0].modifiers.length, 2);
       assert.strictEqual(result.ast.items[0].modifiers[0], '/prompt');
       assert.strictEqual(result.ast.items[0].modifiers[1], '/php');
+    });
+
+    test('should parse date before time with no flags', () => {
+      const content = `2026-06-30 15:12:15 .. 15:12:47
+    backlog body
+`;
+      const result = parse(content);
+
+      assert.strictEqual(result.ast.items.length, 1);
+      assert.strictEqual(result.ast.items[0].flags.length, 0);
+      assert.strictEqual(result.ast.items[0].date, '2026-06-30');
+      assert.strictEqual(result.ast.items[0].time, '15:12:15');
+    });
+
+    test('formatItemHead inserts flags before date', () => {
+      const content = `2026-06-30 15:12:15 .. 15:12:47
+    backlog body
+`;
+      const item = parse(content).ast.items[0];
+      const headText = '2026-06-30 15:12:15 .. 15:12:47';
+      assert.strictEqual(formatItemHead(item, headText, ['☑️']), '☑️ 2026-06-30 15:12:15 .. 15:12:47');
     });
 
     test('should parse complete head with all components', () => {

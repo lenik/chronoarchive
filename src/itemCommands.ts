@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { parse } from './parser';
+import { formatItemHead, parse } from './parser';
+import { CYCLE_FLAG_GROUPS, isCycleEmojiFlag } from './flags';
 import { Item } from './types';
 
 /** Default payload hint for new items. Use plain text selection (not snippet tab-stops) so the first keystroke replaces it without snippet-mode selection glitches. */
@@ -152,56 +153,56 @@ export function registerItemCommands(): vscode.Disposable[] {
   // Cycling toggle for Done flags
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleDoneCycle', async () => {
-      await cycleFlag(['☑️', '✅', '🎉']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.done]);
     })
   );
 
   // Cycling toggle for Closed flags
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleClosedCycle', async () => {
-      await cycleFlag(['❌', '❎', '🗑️']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.closed]);
     })
   );
 
   // Cycling toggle for Pending flags
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.togglePendingCycle', async () => {
-      await cycleFlag(['🟡', '⏱️', '⌛', '🚧', '🔄', '🛠️']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.pending]);
     })
   );
 
   // Cycling toggle for Importance flags
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleImportanceCycle', async () => {
-      await cycleFlag(['📝', '📍', '📌']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.importance]);
     })
   );
 
   // Cycling toggle for Attention flags
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleAttentionCycle', async () => {
-      await cycleFlag(['⚠️', '‼️', '🔥']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.attention]);
     })
   );
 
   // Cycling toggle for Drink flags (Ctrl+@)
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleDrinkCycle', async () => {
-      await cycleFlag(['☕️', '🍵', '🍼', '🍻', '🍹', '🍷']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.drink]);
     })
   );
 
   // Cycling toggle for Good emotion flags (Ctrl+))
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleGoodEmotionCycle', async () => {
-      await cycleFlag(['💕', '🤏', '☺️', '😃', '👍', '😍', '😘']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.goodEmotion]);
     })
   );
 
   // Cycling toggle for Bad emotion flags (Ctrl+()
   disposables.push(
     vscode.commands.registerCommand('chronoarchive.toggleBadEmotionCycle', async () => {
-      await cycleFlag(['🥺', '🫩', '😂', '🤣', '😭', '😅', '💀']);
+      await cycleFlag([...CYCLE_FLAG_GROUPS.badEmotion]);
     })
   );
 
@@ -242,23 +243,18 @@ async function toggleFlag(flag: string): Promise<void> {
   
   let newHeadText: string;
   if (hasFlag) {
-    // Remove flag
-    newHeadText = headText.replace(new RegExp(`\\s*${escapeRegExp(flag)}\\s*`, 'g'), ' ').trim();
-    // Ensure we still have a valid head line
+    const newFlags = item.flags.filter((f) => f !== flag && !f.includes(flag));
+    if (newFlags.length === item.flags.length) {
+      newHeadText = headText.replace(new RegExp(`\\s*${escapeRegExp(flag)}\\s*`, 'g'), ' ').trim();
+    } else {
+      newHeadText = formatItemHead(item, headText, newFlags);
+    }
     if (!newHeadText.match(/\d{2}:\d{2}/)) {
       vscode.window.showErrorMessage('Cannot remove flag: would invalidate head line');
       return;
     }
   } else {
-    // Add flag at the beginning (after any existing flags)
-    const parts = headText.split(/\s+/);
-    const timeIndex = parts.findIndex(p => p.match(/^\d{2}:\d{2}/));
-    if (timeIndex >= 0) {
-      parts.splice(timeIndex, 0, flag);
-      newHeadText = parts.join(' ');
-    } else {
-      newHeadText = `${flag} ${headText}`;
-    }
+    newHeadText = formatItemHead(item, headText, [...item.flags, flag]);
   }
 
   await editor.edit(editBuilder => {
@@ -294,7 +290,7 @@ async function cycleFlag(flagList: string[]): Promise<void> {
   }
 
   const headLine = editor.document.lineAt(item.startLine);
-  let headText = headLine.text;
+  const headText = headLine.text;
   
   // Find which flag from the list is currently in the head
   let currentIndex = -1;
@@ -308,36 +304,22 @@ async function cycleFlag(flagList: string[]): Promise<void> {
   // Determine next flag (cycle or toggle off)
   let newHeadText: string;
   if (currentIndex === -1) {
-    // No flag from the list exists, add the first one
-    
-    // Remove all known flag emoji from the head line
-    // include optional U+FE0E/U+FE0F variation selectors
-    const flagPattern = /[☑✅🎉❌❎🗑🟡⏱⌛🚧🔄🛠📝📍📌⚠‼🔥☕🍵🍼🍻🍹🍷💕🤏☺😃👍😍😘🥺🫩😂🤣😭😅💀][\uFE0E\uFE0F]?/gu;
-    headText = headText.replace(flagPattern, '').trim();
-    
-    const flag = flagList[0];
-    const parts = headText.split(/\s+/);
-    const timeIndex = parts.findIndex(p => p.match(/^\d{2}:\d{2}/));
-    if (timeIndex >= 0) {
-      parts.splice(timeIndex, 0, flag);
-      newHeadText = parts.join(' ');
-    } else {
-      newHeadText = `${flag} ${headText}`;
-    }
+    const newFlags = item.flags.filter((f) => !isCycleEmojiFlag(f));
+    newFlags.push(flagList[0]);
+    newHeadText = formatItemHead(item, headText, newFlags);
   } else if (currentIndex === flagList.length - 1) {
-    // Last flag in the list, toggle it off
     const flag = flagList[currentIndex];
-    newHeadText = headText.replace(new RegExp(`\\s*${escapeRegExp(flag)}\\s*`, 'g'), ' ').trim();
-    // Ensure we still have a valid head line
+    const newFlags = item.flags.filter((f) => f !== flag);
+    newHeadText = formatItemHead(item, headText, newFlags);
     if (!newHeadText.match(/\d{2}:\d{2}/)) {
       vscode.window.showErrorMessage('Cannot remove flag: would invalidate head line');
       return;
     }
   } else {
-    // Replace current flag with next one in the list
     const currentFlag = flagList[currentIndex];
     const nextFlag = flagList[currentIndex + 1];
-    newHeadText = headText.replace(new RegExp(`\\s*${escapeRegExp(currentFlag)}\\s*`, 'g'), ` ${nextFlag} `).trim();
+    const newFlags = item.flags.map((f) => (f === currentFlag ? nextFlag : f));
+    newHeadText = formatItemHead(item, headText, newFlags);
   }
 
   await editor.edit(editBuilder => {
@@ -392,26 +374,14 @@ async function setPriority(stars: number): Promise<void> {
   let newHeadText: string;
   
   if (isDoublePress && currentStars === stars) {
-    // Toggle off: remove all stars
-    newHeadText = headText.replace(/\s*⭐+/g, '').trim();
-    // Clean up any extra spaces
-    newHeadText = newHeadText.replace(/\s+/g, ' ').trim();
+    const newFlags = item.flags.filter((f) => !/^⭐+$/.test(f));
+    newHeadText = formatItemHead(item, headText, newFlags);
   } else {
-    // Remove existing star flags
-    newHeadText = headText.replace(/\s*⭐+/g, '').trim();
-    
-    // Add new star count if > 0
+    const newFlags = item.flags.filter((f) => !/^⭐+$/.test(f));
     if (stars > 0) {
-      const starString = '⭐'.repeat(stars);
-      const parts = newHeadText.split(/\s+/);
-      const timeIndex = parts.findIndex(p => p.match(/^\d{2}:\d{2}/));
-      if (timeIndex >= 0) {
-        parts.splice(timeIndex, 0, starString);
-        newHeadText = parts.join(' ');
-      } else {
-        newHeadText = `${starString} ${newHeadText}`;
-      }
+      newFlags.push('⭐'.repeat(stars));
     }
+    newHeadText = formatItemHead(item, headText, newFlags);
   }
 
   await editor.edit(editBuilder => {
