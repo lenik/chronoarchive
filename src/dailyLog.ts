@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { buildCopiedDailyLogContent } from './dailyLogCopy';
+import { getDailyLogContentFromTemplate } from './dailyLogCopy';
 
 const DAILY_LOGS_FOLDER = 'Daily Logs';
 
@@ -75,28 +75,8 @@ export function tryParseDailyLogDateFromFilePath(filePath: string): Date | null 
   return date;
 }
 
-function formatCreation(date: Date): string {
-  const wd = date.toLocaleDateString('en-US', { weekday: 'short' });
-  const mon = date.toLocaleDateString('en-US', { month: 'short' });
-  const day = date.getDate();
-  const time = date.toLocaleTimeString('en-US', {
-    hour12: true,
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-  const tzPart = date.toLocaleTimeString('en-US', { timeZoneName: 'short' });
-  const tz = tzPart.split(' ').pop() || '';
-  const year = date.getFullYear();
-  return `${wd} ${mon} ${day} ${time} ${tz} ${year}`;
-}
-
-function formatTime(date: Date): string {
-  const h = String(date.getHours()).padStart(2, '0');
-  const m = String(date.getMinutes()).padStart(2, '0');
-  const s = String(date.getSeconds()).padStart(2, '0');
-  return `${h}:${m}:${s}`;
-}
+/** Max calendar days to scan when jumping to an existing adjacent daily log (safety cap). */
+const MAX_ADJACENT_SCAN_DAYS = 365 * 50;
 
 const TEMPLATE = `Title: Having_fun_with_ChronoArchive
 Type: Daily Logs
@@ -123,7 +103,7 @@ Creation: {{CREATION}}
     据说为作者👧买杯咖啡☕️很快就能获得📈巨大的成功💎呢～
 `;
 
-function getTemplateContent(): string {
+function getTemplateSource(): { content: string; path: string | null } {
   const config = vscode.workspace.getConfiguration('chronoarchive');
   const templatePath = config.get<string>('dailyLogTemplatePath', '');
   if (templatePath && templatePath.trim() !== '') {
@@ -131,48 +111,19 @@ function getTemplateContent(): string {
     const absPath = path.isAbsolute(resolved) ? resolved : path.join(os.homedir(), resolved);
     if (fs.existsSync(absPath)) {
       try {
-        return fs.readFileSync(absPath, 'utf8');
+        return { content: fs.readFileSync(absPath, 'utf8'), path: absPath };
       } catch {
         // fall through to default
       }
     }
   }
-  return TEMPLATE;
+  return { content: TEMPLATE, path: null };
 }
 
 export function getDailyLogContent(date: Date): string {
-  const creation = formatCreation(date);
-  const time = formatTime(date);
-  const template = getTemplateContent();
-  return template.replace(/\{\{CREATION\}\}/g, creation).replace(/\{\{TIME\}\}/g, time);
+  const { content, path: templatePath } = getTemplateSource();
+  return getDailyLogContentFromTemplate(content, templatePath, date);
 }
-
-function getPreviousCalendarDate(date: Date): Date {
-  const prev = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  prev.setDate(prev.getDate() - 1);
-  return prev;
-}
-
-/**
- * Content for a new daily log: copy from the previous day's file when it exists, otherwise use the template.
- */
-function getContentForNewDailyLog(targetDate: Date, root: string): string {
-  const now = new Date();
-  const prevDate = getPreviousCalendarDate(targetDate);
-  const prevPath = getDailyLogPathForDate(root, prevDate);
-  if (fs.existsSync(prevPath)) {
-    try {
-      const source = fs.readFileSync(prevPath, 'utf8');
-      return buildCopiedDailyLogContent(source, prevDate, now);
-    } catch {
-      // fall through to template
-    }
-  }
-  return getDailyLogContent(now);
-}
-
-/** Max calendar days to scan when jumping to an existing adjacent daily log (safety cap). */
-const MAX_ADJACENT_SCAN_DAYS = 365 * 50;
 
 function pathsEqualFs(a: string, b: string): boolean {
   const na = path.normalize(a);
@@ -232,7 +183,7 @@ export async function openDailyLogForDate(
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      const content = getContentForNewDailyLog(date, root);
+      const content = getDailyLogContent(date);
       fs.writeFileSync(filePath, content, 'utf8');
     }
 

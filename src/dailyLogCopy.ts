@@ -39,7 +39,7 @@ function formatSuperheader(sourceContent: string, now: Date): string {
 
   let hasCreation = false;
   const lines = ast.superheader.map((attr) => {
-    if (attr.name === 'Creation') {
+    if (attr.name.toLowerCase() === 'creation') {
       hasCreation = true;
       return `Creation: ${formatCreation(now)}`;
     }
@@ -81,8 +81,44 @@ function formatBacklogHead(sourceDate: Date, items: Item[]): string {
 
 const NEW_DAY_MESSAGE = 'Today is a new start! ^_^';
 
+/** Parse `YYYY-MM-DD` from a `.car` basename or full path. */
+export function parseDateFromDailyLogBasename(filePath: string): Date | null {
+  const base = filePath.replace(/^.*[/\\]/, '').replace(/\.car$/i, '');
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(base);
+  if (!match) {
+    return null;
+  }
+  const y = parseInt(match[1], 10);
+  const m = parseInt(match[2], 10) - 1;
+  const d = parseInt(match[3], 10);
+  const date = new Date(y, m, d);
+  if (date.getFullYear() !== y || date.getMonth() !== m || date.getDate() !== d) {
+    return null;
+  }
+  return date;
+}
+
+function getPreviousCalendarDate(date: Date): Date {
+  const prev = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  prev.setDate(prev.getDate() - 1);
+  return prev;
+}
+
 /**
- * Build a new daily log by copying the previous day's file:
+ * Apply {{CREATION}}/{{TIME}} placeholders and refresh any existing Creation: line
+ * (custom templates often ship a static timestamp with no placeholders).
+ */
+export function applyDailyLogTemplate(template: string, date: Date): string {
+  const creation = formatCreation(date);
+  const time = formatTime(date);
+  return template
+    .replace(/\{\{CREATION\}\}/g, creation)
+    .replace(/\{\{TIME\}\}/g, time)
+    .replace(/^Creation:\s*.+$/m, `Creation: ${creation}`);
+}
+
+/**
+ * Build today's log from a source document (typically dailyLogTemplatePath):
  * update Creation, prepend today's starter item, and roll prior items into one backlog block.
  */
 export function buildCopiedDailyLogContent(
@@ -103,4 +139,23 @@ export function buildCopiedDailyLogContent(
   const backlogHead = formatBacklogHead(sourceDate, ast.items);
 
   return `${header}\n📝 ${time}\n    ${NEW_DAY_MESSAGE}\n\n${backlogHead}\n${backlogBody}\n`;
+}
+
+/**
+ * Create content for a new daily log file.
+ * Built-in template: substitute placeholders only.
+ * Custom template path (copy-from-last-session): refresh Creation and archive items into backlog.
+ */
+export function getDailyLogContentFromTemplate(
+  templateContent: string,
+  templatePath: string | null,
+  targetDate: Date,
+  now: Date = new Date()
+): string {
+  if (templatePath !== null) {
+    const sourceDate =
+      parseDateFromDailyLogBasename(templatePath) ?? getPreviousCalendarDate(targetDate);
+    return buildCopiedDailyLogContent(templateContent, sourceDate, now);
+  }
+  return applyDailyLogTemplate(templateContent, now);
 }

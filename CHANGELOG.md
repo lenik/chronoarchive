@@ -4,11 +4,19 @@ All notable changes to the **ChronoArchive** VS Code extension are documented he
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and version headings include a release timestamp (`YYYY-MM-DD HH:MM:SS ±TZ`).
 
-## [1.1.8] - 2026-06-30 20:56:43 +0800
+## [1.1.9] - 2026-07-01 16:19:12 +0800
+
+### Fixed
+
+- Daily log creation when **Daily Log Template Path** (`chronoarchive.dailyLogTemplatePath`) points to the last-session `.car`: refresh `Creation` (including static lines without `{{CREATION}}`), prepend `Today is a new start! ^_^`, and roll prior items into a single `= backlog =` block (source date from template filename or the day before the target date).
+- Built-in default template (no custom path): placeholder substitution and `Creation:` refresh only; no backlog roll-up.
+- Removed mistaken auto-copy that scanned `dailyLogsRoot` for the previous or most recent calendar-day file; copy-from-last-session continues to use the configured template path only.
+
+## [1.1.8] - 2026-06-30 21:02:18 +0800
 
 ### Added
 
-- When creating a new daily log, copy the previous calendar day's `.car` file when it exists: refresh `Creation`, prepend `Today is a new start! ^_^`, and roll prior items into a single `= backlog =` block.
+- `CHANGELOG.md` for the VS Code Marketplace / extension **Changelog** tab (timestamped version headings).
 
 ### Fixed
 
