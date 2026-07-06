@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { getDailyLogContentFromTemplate } from './dailyLogCopy';
+import { getDailyLogContentFromTemplate, formatCalendarDateLabel, isSameCalendarDate, parseCreationCalendarDateFromContent } from './dailyLogCopy';
 
 const DAILY_LOGS_FOLDER = 'Daily Logs';
 
@@ -197,9 +197,90 @@ async function showDailyLogInEditor(uri: vscode.Uri): Promise<void> {
   });
 }
 
+async function replaceDailyLogFileContent(filePath: string, content: string): Promise<void> {
+  const uri = vscode.Uri.file(filePath);
+  const openDoc = vscode.workspace.textDocuments.find(
+    (doc) => doc.uri.scheme === 'file' && pathsEqualFs(doc.uri.fsPath, filePath)
+  );
+  if (openDoc) {
+    const fullRange = new vscode.Range(
+      openDoc.positionAt(0),
+      openDoc.positionAt(openDoc.getText().length)
+    );
+    const edit = new vscode.WorkspaceEdit();
+    edit.replace(uri, fullRange, content);
+    const applied = await vscode.workspace.applyEdit(edit);
+    if (applied) {
+      await openDoc.save();
+    }
+    return;
+  }
+  fs.writeFileSync(filePath, content, 'utf8');
+}
+
+function calendarDateOnly(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/**
+ * When opening today's log, verify the superheader `Creation:` calendar date matches the file date.
+ * Prompts to regenerate from template when it does not.
+ */
+async function validateTodayCreationDate(filePath: string, expectedDate: Date): Promise<boolean> {
+  let content: string;
+  try {
+    content = fs.readFileSync(filePath, 'utf8');
+  } catch {
+    return true;
+  }
+
+  const expected = calendarDateOnly(expectedDate);
+  const creationDate = parseCreationCalendarDateFromContent(content);
+  if (creationDate && isSameCalendarDate(creationDate, expected)) {
+    return true;
+  }
+
+  const foundLabel = creationDate
+    ? formatCalendarDateLabel(creationDate)
+    : 'missing or invalid';
+  const expectedLabel = formatCalendarDateLabel(expected);
+  const choice = await vscode.window.showWarningMessage(
+    `ChronoArchive: Today's daily log Creation date is ${foundLabel}, expected ${expectedLabel}. Regenerate from template?`,
+    { modal: true },
+    'Regenerate',
+    'Open Existing'
+  );
+
+  if (choice === 'Regenerate') {
+    const openDoc = vscode.workspace.textDocuments.find(
+      (doc) => doc.uri.scheme === 'file' && pathsEqualFs(doc.uri.fsPath, filePath)
+    );
+    if (openDoc?.isDirty) {
+      const overwrite = await vscode.window.showWarningMessage(
+        'ChronoArchive: The daily log has unsaved changes. Regenerate anyway?',
+        { modal: true },
+        'Regenerate',
+        'Cancel'
+      );
+      if (overwrite !== 'Regenerate') {
+        return false;
+      }
+    }
+    const newContent = getDailyLogContent(expectedDate);
+    await replaceDailyLogFileContent(filePath, newContent);
+    return true;
+  }
+
+  if (choice === 'Open Existing') {
+    return true;
+  }
+
+  return false;
+}
+
 export async function openDailyLogForDate(
   date: Date,
-  options?: { createIfMissing?: boolean }
+  options?: { createIfMissing?: boolean; validateCreationDate?: boolean }
 ): Promise<void> {
   const createIfMissing = options?.createIfMissing !== false;
   const root = getDailyLogsRoot();
@@ -216,6 +297,11 @@ export async function openDailyLogForDate(
       }
       const content = getDailyLogContent(date);
       fs.writeFileSync(filePath, content, 'utf8');
+    } else if (options?.validateCreationDate) {
+      const proceed = await validateTodayCreationDate(filePath, date);
+      if (!proceed) {
+        return;
+      }
     }
 
     const uri = vscode.Uri.file(filePath);
@@ -227,7 +313,7 @@ export async function openDailyLogForDate(
 }
 
 export async function openDailyLog(): Promise<void> {
-  await openDailyLogForDate(new Date());
+  await openDailyLogForDate(new Date(), { validateCreationDate: true });
 }
 
 /**
