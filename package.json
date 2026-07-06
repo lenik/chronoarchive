@@ -2,7 +2,7 @@
   "name": "chronoarchive",
   "displayName": "ChronoArchive",
   "description": "%extension.description%",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "publisher": "lenik",
   "repository": {
     "type": "git",
