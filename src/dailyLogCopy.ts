@@ -31,6 +31,58 @@ function formatCalendarDate(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
+/**
+ * Parse the calendar date from a Creation superheader value (time and timezone are ignored).
+ * Expects the format produced by {@link formatCreation}, e.g. `Wed Mar 14 12:54:33 PM CST 2026`.
+ */
+export function parseCreationCalendarDate(creationValue: string): Date | null {
+  const trimmed = creationValue.trim();
+  const head = /^(\w{3})\s+(\w{3})\s+(\d{1,2})\b/.exec(trimmed);
+  if (!head) {
+    return null;
+  }
+  const yearMatch = /\b(\d{4})\s*$/.exec(trimmed);
+  if (!yearMatch) {
+    return null;
+  }
+  const year = parseInt(yearMatch[1], 10);
+  const parsed = new Date(`${head[2]} ${head[3]}, ${year}`);
+  if (isNaN(parsed.getTime())) {
+    return null;
+  }
+  const date = new Date(year, parsed.getMonth(), parsed.getDate());
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== parsed.getMonth() ||
+    date.getDate() !== parsed.getDate()
+  ) {
+    return null;
+  }
+  return date;
+}
+
+/** Read `Creation:` from file content and return its calendar date, or null if missing/invalid. */
+export function parseCreationCalendarDateFromContent(content: string): Date | null {
+  const { ast } = parse(content);
+  const creation = ast.superheader.find((attr) => attr.name.toLowerCase() === 'creation');
+  if (!creation) {
+    return null;
+  }
+  return parseCreationCalendarDate(creation.value);
+}
+
+export function formatCalendarDateLabel(date: Date): string {
+  return formatCalendarDate(date);
+}
+
+export function isSameCalendarDate(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
 function formatSuperheader(sourceContent: string, now: Date): string {
   const { ast } = parse(sourceContent);
   if (ast.superheader.length === 0) {

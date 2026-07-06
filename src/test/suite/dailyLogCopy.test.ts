@@ -3,9 +3,52 @@ import {
   applyDailyLogTemplate,
   buildCopiedDailyLogContent,
   getDailyLogContentFromTemplate,
+  isSameCalendarDate,
+  parseCreationCalendarDate,
+  parseCreationCalendarDateFromContent,
 } from '../../dailyLogCopy';
 
 suite('Daily Log Copy Tests', () => {
+  test('parseCreationCalendarDate ignores time and timezone', () => {
+    const date = parseCreationCalendarDate('Wed Mar 14 12:54:33 PM CST 2026');
+    assert.ok(date);
+    if (!date) {
+      return;
+    }
+    assert.strictEqual(date.getFullYear(), 2026);
+    assert.strictEqual(date.getMonth(), 2);
+    assert.strictEqual(date.getDate(), 14);
+
+    const otherTime = parseCreationCalendarDate('Wed Mar 14 09:00:00 AM CST 2026');
+    assert.ok(otherTime);
+    if (!otherTime) {
+      return;
+    }
+    assert.ok(isSameCalendarDate(date, otherTime));
+  });
+
+  test('parseCreationCalendarDateFromContent reads superheader Creation', () => {
+    const content = `Title: Test
+Type: Daily Logs
+Creation: Sun Jun 29 09:00:00 AM CST 2026
+
+📝 09:00:00
+    hello
+`;
+    const parsed = parseCreationCalendarDateFromContent(content);
+    assert.ok(parsed);
+    if (!parsed) {
+      return;
+    }
+    assert.strictEqual(parsed.getFullYear(), 2026);
+    assert.strictEqual(parsed.getMonth(), 5);
+    assert.strictEqual(parsed.getDate(), 29);
+  });
+
+  test('parseCreationCalendarDate returns null without year', () => {
+    assert.strictEqual(parseCreationCalendarDate('Thu May 28 12:54:33 PM CST'), null);
+  });
+
   test('refreshes static Creation line in built-in template', () => {
     const template = `Title: Test
 Type: Daily Logs
